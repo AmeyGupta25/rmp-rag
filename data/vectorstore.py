@@ -7,7 +7,14 @@ import uuid
 
 load_dotenv()
 
-model = SentenceTransformer('all-MiniLM-L6-v2')
+_model = None
+
+def get_model():
+    global _model
+    if _model is None:
+        _model = SentenceTransformer('all-MiniLM-L6-v2')
+    return _model
+
 pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 index = pc.Index(os.getenv("PINECONE_INDEX"))
 
@@ -33,8 +40,8 @@ def upload_reviews():
     for i in range(0, len(df), batch_size):
         batch = df.iloc[i:i+batch_size]
         documents = [build_document(row) for _, row in batch.iterrows()]
-        embeddings = model.encode(documents).tolist()
-
+        embeddings = get_model().encode(documents).tolist()
+        
         vectors = []
         for j, (_, row) in enumerate(batch.iterrows()):
             vectors.append({
@@ -56,7 +63,7 @@ def upload_reviews():
     print(f"Done! {len(df)} reviews uploaded to Pinecone.")
 
 def query(question, top_k=8):
-    embedding = model.encode([question]).tolist()[0]
+    embedding = get_model().encode([question]).tolist()[0]
     results = index.query(vector=embedding, top_k=top_k, include_metadata=True)
     return [match["metadata"]["text"] for match in results["matches"]]
 
