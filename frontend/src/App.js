@@ -42,10 +42,6 @@ export default function App() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  useEffect(() => {
-    if (page === "professors") loadProfessors();
-  }, [page, profDept, profSort, loadProfessors]); // eslint-disable-line react-hooks/exhaustive-deps
-
   const loadProfessors = async () => {
     setProfLoading(true);
     const r = await axios.get(`${API}/professors`, {
@@ -54,6 +50,10 @@ export default function App() {
     setProfessors(r.data.professors);
     setProfLoading(false);
   };
+
+  useEffect(() => {
+    if (page === "professors") loadProfessors();
+  }, [page, profDept, profSort, loadProfessors]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const ask = async (q) => {
     const question = q || input;
