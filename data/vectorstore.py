@@ -1,5 +1,4 @@
 from pinecone import Pinecone
-from sentence_transformers import SentenceTransformer
 import pandas as pd
 import os
 from dotenv import load_dotenv
@@ -7,16 +6,16 @@ import uuid
 
 load_dotenv()
 
-_model = None
-
-def get_model():
-    global _model
-    if _model is None:
-        _model = SentenceTransformer('all-MiniLM-L6-v2')
-    return _model
-
 pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 index = pc.Index(os.getenv("PINECONE_INDEX"))
+
+def get_embeddings(texts):
+    result = pc.inference.embed(
+        model="multilingual-e5-large",
+        inputs=texts,
+        parameters={"input_type": "passage"}
+    )
+    return [item.values for item in result]
 
 def build_document(row):
     text = f"""
@@ -36,12 +35,12 @@ def upload_reviews():
     df = df.dropna(subset=["comment"])
     print(f"Uploading {len(df)} reviews to Pinecone...")
 
-    batch_size = 100
+    batch_size = 50
     for i in range(0, len(df), batch_size):
         batch = df.iloc[i:i+batch_size]
         documents = [build_document(row) for _, row in batch.iterrows()]
-        embeddings = get_model().encode(documents).tolist()
-        
+        embeddings = get_embeddings(documents)
+
         vectors = []
         for j, (_, row) in enumerate(batch.iterrows()):
             vectors.append({
@@ -63,7 +62,12 @@ def upload_reviews():
     print(f"Done! {len(df)} reviews uploaded to Pinecone.")
 
 def query(question, top_k=8):
-    embedding = get_model().encode([question]).tolist()[0]
+    result = pc.inference.embed(
+        model="multilingual-e5-large",
+        inputs=[question],
+        parameters={"input_type": "query"}
+    )
+    embedding = result[0].values
     results = index.query(vector=embedding, top_k=top_k, include_metadata=True)
     return [match["metadata"]["text"] for match in results["matches"]]
 
