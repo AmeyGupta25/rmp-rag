@@ -1,0 +1,501 @@
+id,name,department,avg_rating,avg_difficulty,num_ratings,would_take_again
+VGVhY2hlci0xOTEyMTcy,Brian Shotwell,Physics,2.6,4.1,212,38.2353
+VGVhY2hlci0yMzk3NjQ3,Andrew Cooper,Biology,3.3,3.6,208,53.3654
+VGVhY2hlci01MDU1Nzc=,Douglas Smith,Physics,3.2,3.0,198,87.2093
+VGVhY2hlci0xMjk1NjAw,Michael Burg,Biology,4.4,2.9,151,91.5966
+VGVhY2hlci0yMTgyNDQx,Brian Zid,Chemistry,4.2,3.2,118,77.1186
+VGVhY2hlci0yMDk5NzQ5,Alexander Stewart,Anthropology,3.9,2.5,115,76.1062
+VGVhY2hlci0yNzMyMzU5,Denise Rava,Mathematics,2.8,3.8,106,42.4528
+VGVhY2hlci0yOTQyMDI=,Glenn Tesler,Mathematics,3.9,2.9,102,78.7879
+VGVhY2hlci01NjYzMjE=,Jerry Yang,Chemistry,3.2,3.7,84,28.5714
+VGVhY2hlci0yOTcyNzI3,Christopher Gartland,Mathematics,2.8,4.1,77,45.4545
+VGVhY2hlci0yMjg0Njg0,Joseph Politz,Computer Science,4.1,3.1,65,81.5385
+VGVhY2hlci0yODM1NDc3,Jon Aycock,Mathematics,2.4,3.8,61,40.9836
+VGVhY2hlci0yMzg0NjYy,Timothy Brady,Psychology,4.6,2.9,59,86.4407
+VGVhY2hlci0xMTIzMTkz,Olga Dudko,Physics,4.3,3.0,58,75.0
+VGVhY2hlci0xNTEzNzg2,Miles Jones,Mathematics,3.7,3.1,56,62.7907
+VGVhY2hlci0zMDc4ODI3,Lucas Buzaglo,Mathematics,4.9,2.4,56,98.2143
+VGVhY2hlci0yNzMwODc=,Michael Caldwell,Humanities,4.2,3.2,48,71.4286
+VGVhY2hlci0xNTM1Mzc5,Thomas Bewley,Engineering,1.5,4.5,43,0.0
+VGVhY2hlci0yOTQ0MjQw,Jessica Arlett,Physics,2.3,4.3,34,32.3529
+VGVhY2hlci0yODQ5NzU3,Hongyi Sheng,Mathematics,2.2,4.2,32,25.0
+VGVhY2hlci0xMTQ4NjA4,Tajana Rosing,Computer Science,2.8,4.0,32,30.7692
+VGVhY2hlci0zMTI1MDQ4,Srivatsa Srinivas,Mathematics,4.2,2.7,31,83.871
+VGVhY2hlci0yMTY0ODYx,Caren Walker,Psychology,4.3,3.1,31,77.4194
+VGVhY2hlci0zMDY0MjY5,Lei Huang,Mathematics,3.1,2.9,30,46.6667
+VGVhY2hlci0yNzY4NDIw,Erik Romero,Chemistry,3.2,4.0,30,50.0
+VGVhY2hlci0yNjQ5Mzg=,Kartik Seshadri,Music,3.6,2.1,28,60.0
+VGVhY2hlci0yODczMDI2,Bretton Rodriguez,Humanities,4.7,2.4,27,92.5926
+VGVhY2hlci0yNDczNDU0,Enfu Hui,Biological Sciences,4.8,3.3,24,95.8333
+VGVhY2hlci0yNDk0NDc0,Taylor Berg-Kirkpatrick,Computer Science,3.5,3.2,23,65.2174
+VGVhY2hlci0xOTk3OTky,Su Chih-Ying,Biological Sciences,3.5,3.8,23,55.0
+VGVhY2hlci01NTkwMzI=,Sandra Brown,Psychology,3.1,3.5,15,50.0
+VGVhY2hlci0zMDIwMzg0,Anthony Sanchez,Mathematics,4.3,4.5,13,76.9231
+VGVhY2hlci0yNzc5MDMz,Matthew Lovett-Baron,Biological Sciences,3.1,3.9,10,50.0
+VGVhY2hlci0zMTMyMDQx,Lucy Lai,Cognitive Science,5.0,2.0,10,100.0
+VGVhY2hlci0yOTg0NTQ4,John  Treuer,Mathematics,4.1,2.6,9,88.8889
+VGVhY2hlci0zMTUxNjcz,Stuart Schwab Jr. ,Biology,3.6,2.7,7,57.1429
+VGVhY2hlci0zMTA3NzIy,Thomas Hong Tsun Wong,Physics,5.0,4.5,6,100.0
+VGVhY2hlci0yOTY2MjY1,Alex Snoeren,Computer Science,4.8,4.8,5,80.0
+VGVhY2hlci01ODYyOQ==,Elizabeth Jenkins,Physics,2.6,3.0,5,0.0
+VGVhY2hlci0yODk4MTM1,Tzu-Chien Hsueh,Engineering,5.0,3.5,4,100.0
+VGVhY2hlci0zMDU2MDc4,Aaron Rosengren,Engineering,2.3,2.5,4,25.0
+VGVhY2hlci0xNjA3MTk2,Adam Bowers,Mathematics,4.2,2.9,272,74.4048
+VGVhY2hlci0yMTYzMzA5,David Quarfoot,Mathematics,3.6,3.7,194,63.2124
+VGVhY2hlci0yNDU0NzYy,Frances Hammock,Mathematics,2.9,3.5,184,47.8261
+VGVhY2hlci0xMjgyMjU=,Christine Johnson,Cognitive Science,4.2,3.1,138,82.1053
+VGVhY2hlci0yOTM0OTgz,Gaojin He,Mathematics,1.7,4.4,137,15.3285
+VGVhY2hlci0yMDgwNjQ4,James Cooke,Biological Sciences,3.3,4.0,130,51.3514
+VGVhY2hlci02Njc3OQ==,Grant Kester,Fine Arts,4.7,2.1,79,94.1176
+VGVhY2hlci0zMDQ1NDA3,Stacy Ochoa Mikrut,Biology,4.2,2.6,76,80.2632
+VGVhY2hlci0yOTQyMTQ1,Yinlin Dai ,Economics,3.7,2.9,61,68.3333
+VGVhY2hlci0xMTExMDU0,Giacomo Rondina,Economics,3.5,4.0,51,57.8947
+VGVhY2hlci0xMTE3Njg=,Karen Dobkins,Psychology,4.1,2.8,50,67.7419
+VGVhY2hlci0zMDQ2MTQ1,Ching Wei Ho,Mathematics,4.7,2.5,49,95.9184
+VGVhY2hlci0zOTM4MjM=,Andrea Chiba,Cognitive Science,4.6,3.0,41,91.3043
+VGVhY2hlci0yODQwODQx,Meredith Crane,Economics,4.8,2.0,35,97.1429
+VGVhY2hlci0yOTE5MzA3,Siddharth Vishwanath,Mathematics,2.5,3.5,32,37.5
+VGVhY2hlci0yNjczOTM0,Travis Chamberlain,Management,4.4,2.4,25,76.0
+VGVhY2hlci0yMjE0ODE0,Debashis Sahoo,Computer Science,3.2,2.9,21,52.381
+VGVhY2hlci0yOTc5MDQ0,Andrew  Pun,Chemistry,3.9,3.7,19,78.9474
+VGVhY2hlci0zMDc1MjI0,Matthew Crum,Humanities,4.6,2.8,15,93.3333
+VGVhY2hlci0yNDIyMTA5,Cory Root,Biology,3.7,2.4,13,69.2308
+VGVhY2hlci03MTA1MTM=,Kaustuv Roy,Biology,4.2,2.5,11,100.0
+VGVhY2hlci0zMTI3MDkx,Yi Fu,Mathematics,2.9,2.9,11,72.7273
+VGVhY2hlci0yOTI2NjY3,Alexandra Jazz Dickinson,Biology,4.7,2.7,10,90.0
+VGVhY2hlci0yNDgyNzQ2,Wei Xiong,Chemistry,2.4,4.3,10,30.0
+VGVhY2hlci0yNjI3MzEy,Jennifer Deal,Business,3.7,3.2,6,66.6667
+VGVhY2hlci0yOTg1ODcx,Mary Klann,History,5.0,1.0,6,100.0
+VGVhY2hlci0zMTU4MTg5,Marcus Brooks,Finance,4.7,3.0,3,100.0
+VGVhY2hlci0zMTU4NTg5,Andrew  Chisholm,Biology,2.0,4.5,2,0.0
+VGVhY2hlci0zMTE2NTE5,Kyle Kehrer,Physics,4.5,1.5,2,100.0
+VGVhY2hlci0xMDU3ODQ=,John Eggers,Mathematics,3.5,3.2,433,37.1287
+VGVhY2hlci04NTc1NjE=,Edmond Chang,History,3.9,3.3,291,65.7407
+VGVhY2hlci00NjkwNTE=,Melissa Famulari,Economics,3.4,3.7,144,64.4068
+VGVhY2hlci0yNDEzOTM3,Leesa Anzaldo,Mathematics,4.3,3.1,111,84.6847
+VGVhY2hlci0yMjM1ODQx,Harold Buchanan,Business,3.9,2.7,106,72.6415
+VGVhY2hlci0yNDgzOTU=,Emmanuel Theodorakis,Chemistry,3.7,3.6,96,57.7778
+VGVhY2hlci0yOTU1NjE=,Seth M Cohen,Chemistry,3.5,3.2,74,60.7143
+VGVhY2hlci0xMjYzMjk=,David Borgo,Music,4.1,1.8,65,80.0
+VGVhY2hlci05NzQyMzc=,Adam Aron,Psychology,3.0,4.0,61,35.2941
+VGVhY2hlci0xNzAwNjMy,Geoffrey Cook,Geology,4.9,1.6,52,97.2973
+VGVhY2hlci0yNDU0ODAw,Burritt Demill,Marketing,3.7,2.7,52,70.5882
+VGVhY2hlci05NDI4ODU=,Morana Alac,Communication,4.1,2.6,41,77.7778
+VGVhY2hlci0yMDgzNjI4,Zhuowen Tu,Cognitive Science,2.3,3.2,30,33.3333
+VGVhY2hlci0xMzA2NTA3,L. Jean Dunn,Business,3.4,2.7,25,53.8462
+VGVhY2hlci0zMDQ5MDg0,Karthik Ganapathy,Mathematics,2.6,3.1,20,55.0
+VGVhY2hlci0yMDU1ODYy,Sheri  Hartman,Public Health,2.9,2.7,18,37.5
+VGVhY2hlci0yNTUxMDUw,Gabrielle Jones,Education,3.8,2.3,12,58.3333
+VGVhY2hlci0yODYyMDYw,Alexandra Mastromartino,Literature,5.0,1.6,12,100.0
+VGVhY2hlci0yODM4NTgz,Johnatan Aljadeff,Biology,1.5,4.6,11,9.0909
+VGVhY2hlci0zNjA2MTA=,Richard Norris,Science,4.4,2.9,11,100.0
+VGVhY2hlci0yOTg2MzU3,Uri Gneezy,Management,3.3,1.9,7,57.1429
+VGVhY2hlci0yNzc0NzY5,Amina Schartup,Geology,4.3,2.0,3,100.0
+VGVhY2hlci0yOTE0MTk0,Benjamin Doller,Literature,3.7,1.7,3,66.6667
+VGVhY2hlci0yOTk2NTA1,Zahra Sadeghizadeh,Engineering,5.0,2.0,2,100.0
+VGVhY2hlci0zMDc2NTE2,Ania  Jaroszewicz,Business,5.0,3.0,2,100.0
+VGVhY2hlci0zMTI3NTE4,Baozhi Chu,Mathematics,3.5,3.0,2,50.0
+VGVhY2hlci0yMDk2NDc=,Andrew Kummel,Chemistry,3.7,3.6,255,51.2605
+VGVhY2hlci0xNjQ2MjU4,Mary McKay,Management,2.0,3.8,252,17.9487
+VGVhY2hlci0yNjA0MDYz,Dontarie Stallings,Chemistry,3.9,3.3,176,72.1591
+VGVhY2hlci0zMTQxNDM=,Fred Rose,Psychology,4.1,3.3,174,77.3585
+VGVhY2hlci0yODA0Mjk3,Liam Mueller,Biology,3.8,3.0,89,69.6629
+VGVhY2hlci0xOTAyOTQ2,Cathleen Moran,Management,2.6,3.7,82,28.2051
+VGVhY2hlci00MjU2MzI=,Allan Havis,Theater,4.0,2.0,80,76.6667
+VGVhY2hlci0zMDg1NTQ2,Mingyu Yang,Biology,4.1,3.2,65,80.0
+VGVhY2hlci0zNTYzNzM=,Kenneth Zeger,Engineering,3.2,4.8,59,41.3793
+VGVhY2hlci0xODM4ODYz,Amanda Solomon,Humanities,3.7,2.3,54,73.5849
+VGVhY2hlci0xNTQ2MTM1,Francesco Paesani,Chemistry,4.6,3.3,54,83.7838
+VGVhY2hlci0yMjQ1MTQz,Drew Hoffman,Psychology,3.8,2.6,50,76.0
+VGVhY2hlci0yNDY4MDQw,Justin McIntosh,Linguistics,4.6,2.0,47,93.617
+VGVhY2hlci05NjAxOTk=,Gordon Dahl,Economics,3.9,3.7,47,66.6667
+VGVhY2hlci0yNTc4MzQ2,Huihui Qi,Engineering,4.4,3.2,38,81.5789
+VGVhY2hlci0yNDY3NDEy,Jessica D'Elena-Tweed,Visual Arts,2.7,2.5,36,28.5714
+VGVhY2hlci0yMDI0NTc0,Danielle Raudenbush,Sociology,4.5,2.1,36,94.2857
+VGVhY2hlci0xOTA3ODIx,Andy Lamey,Philosophy,3.9,2.9,34,61.5385
+VGVhY2hlci0yOTg3NjM1,Isabella Maita,Biology,3.9,3.6,32,75.0
+VGVhY2hlci0xNTQxODA0,Scott Rifkin,Biology,3.0,3.8,32,33.3333
+VGVhY2hlci0zOTM4MjE=,Virginia Desa,Cognitive Science,2.6,3.6,30,13.3333
+VGVhY2hlci0yNTc2MTkx,Boris Kramer,Engineering,1.9,4.7,23,21.7391
+VGVhY2hlci0xMTM5NTYw,Falko Kuester,Engineering,2.6,3.4,23,80.0
+VGVhY2hlci0yNjcwMzIw,Ndapa Nakashole,Computer Science,3.6,3.3,22,63.6364
+VGVhY2hlci0yMDY2NTY3,Mark Young,English,4.6,2.8,21,82.3529
+VGVhY2hlci0yMzg4MzI4,Pinar Yoldas,Visual Arts,3.3,2.3,21,65.0
+VGVhY2hlci01MzQwOTM=,Sergei Krasheninnikov,Engineering,1.8,3.6,20,0.0
+VGVhY2hlci0zMDIwMzc4,Brandon Seward,Mathematics,4.1,2.9,19,78.9474
+VGVhY2hlci0zMDE3NTYy,Rajeev Sahay,Electrical Engineering & Computer Science,4.3,2.6,18,88.8889
+VGVhY2hlci0yODIyOTY5,Marisol Cuong,Gender Studies,4.5,2.5,13,92.3077
+VGVhY2hlci0yMTA1MTkx,Dave Stegman,Oceanography,2.2,3.5,11,25.0
+VGVhY2hlci0yNjU5NTg1,Songzi Du,Economics,4.4,2.0,8,87.5
+VGVhY2hlci0zMTA3OTM2,Wodarz Wodarz,Biology,1.2,4.0,6,0.0
+VGVhY2hlci0zMDY4OTUw,Maya VanderSchuit,Writing,3.2,2.3,6,33.3333
+VGVhY2hlci0xODg3MjI3,Jeff Hasty,Engineering,4.0,2.0,6,66.6667
+VGVhY2hlci0yODA2NjMw,Christopher Pereira,Ethnic Studies,5.0,2.0,3,100.0
+VGVhY2hlci0zMDU5NTQ3,McKenna Denise,Communication,4.0,1.0,1,100.0
+VGVhY2hlci0xNzA2NTY5,Keefe Reuther,Biology,3.8,2.9,200,76.7606
+VGVhY2hlci0yODczNTQ3,Jor-El Briones,Computer Science,2.4,3.9,187,33.1551
+VGVhY2hlci0xNzQ2MTc2,Robert Campbell,Management,4.3,2.3,135,77.4775
+VGVhY2hlci0xMDU3ODM=,Mike Sailor,Chemistry,3.3,2.7,107,36.1111
+VGVhY2hlci0yMjMyMzY0,Christopher Day,Biology,3.3,3.5,72,56.9444
+VGVhY2hlci0yNjU2MjQx,Andrew deWaard,Communication,2.5,3.8,64,37.5
+VGVhY2hlci01NzQ2OTg=,Ricardo Dominguez,Fine Arts,4.5,2.5,60,100.0
+VGVhY2hlci0yMTg5NzYz,Jennifer Carr,Philosophy,3.2,3.3,60,61.6667
+VGVhY2hlci0xMTE5Mzcz,John Wixted,Psychology,3.8,3.4,51,55.814
+VGVhY2hlci03MjM4Nzk=,Rachel Mayberry,Languages,3.0,2.5,43,75.0
+VGVhY2hlci0yMjc5Mzg5,Kathy Lacefield,Psychology,4.5,2.2,42,92.8571
+VGVhY2hlci0yMjQwMDIx,Dennis Trinidad,Public Health,4.8,1.6,39,94.8718
+VGVhY2hlci0xODM0ODMy,Jessica Graham,History,4.8,2.2,39,93.75
+VGVhY2hlci0xMjYyNTE3,Clifford Kubiak,Chemistry,3.0,3.9,34,31.5789
+VGVhY2hlci0xNTI4NTQ5,Jill Leutgeb,Biology,3.9,3.1,33,56.25
+VGVhY2hlci0yNDE0OTkw,Stanley Lo,Biology,3.7,2.4,31,77.4194
+VGVhY2hlci0yODc1ODk4,Anne Yilmaz,Psychology,2.7,4.2,30,31.0345
+VGVhY2hlci0yNjYyODY1,Melinda Guillen,English,4.9,3.1,28,96.4286
+VGVhY2hlci04ODE3MDE=,Carrie Wastal,Writing,3.7,3.0,27,57.1429
+VGVhY2hlci0xMTg4NjY=,Marc Meyers,Engineering,3.2,1.8,26,50.0
+VGVhY2hlci01NzgxODg=,Brian Goldfarb,Communication,4.1,2.1,20,75.0
+VGVhY2hlci0yNjQwNDAw,Thomas Rainer Schmidt,Communication,4.5,1.6,18,94.4444
+VGVhY2hlci0yMjAzMTEy,Jeffrey Rinehart,Chemistry,3.8,3.2,18,66.6667
+VGVhY2hlci0zMDQ4ODQ4,Uri Manor,Biology,4.5,2.7,18,83.3333
+VGVhY2hlci0yNzgwNzky,Imani Munyaka,Computer Science,1.2,3.0,18,5.5556
+VGVhY2hlci0yNjQ4NDI4,Heidi Cook-Andersen,Biology,2.4,4.7,17,29.4118
+VGVhY2hlci0yMjYxMDcz,Richard Averitt,Physics,3.4,3.4,17,58.8235
+VGVhY2hlci0xMzE1OTEw,James Kadonaga,Biology,4.2,2.6,14,55.5556
+VGVhY2hlci0zMDE4NTk5,Anthony Harb,Communication,4.1,2.3,14,71.4286
+VGVhY2hlci0yNjgxMjIz,Matthew Fulkerson,Philosophy,4.7,2.5,13,100.0
+VGVhY2hlci0yNjc5NTk3,Nathaniel Chapman,Psychology,4.5,2.2,13,92.3077
+VGVhY2hlci0xMzc3ODE5,Kelly Gates,Communication,4.2,1.9,13,100.0
+VGVhY2hlci0yOTU4OTY0,Jose Burgos,Public Health,4.5,1.4,11,81.8182
+VGVhY2hlci0zMDcyMTI1,Karen Villegas,Literature,4.3,1.4,10,90.0
+VGVhY2hlci0zMDQzOTQz,Deepak Kumar,Computer Science,4.9,3.3,9,88.8889
+VGVhY2hlci0yMzIxMjQ3,Lilly Irani,Communication,3.7,2.3,7,66.6667
+VGVhY2hlci0zMTA4MzQ2,Devin Garofalo,Literature,5.0,2.2,5,100.0
+VGVhY2hlci0zMDgyMDM2,Alex Chaim,Biology,4.4,3.0,5,100.0
+VGVhY2hlci0zMDc3NzU2,Dominik Wodarz,Biology,2.6,3.8,5,20.0
+VGVhY2hlci0zMTI3Mjg3,Ian Teixeira,Mathematics,2.3,4.0,3,0.0
+VGVhY2hlci0yMDU4MzA1,Sarah Stockwell,Biological Sciences,4.3,3.0,174,79.4118
+VGVhY2hlci0yNDgwNzIz,Melinda Owens,Biological Sciences,3.5,3.3,155,61.9355
+VGVhY2hlci0yMzI3Mzky,Jeremy Klosterman,Chemistry,2.8,4.2,99,43.4343
+VGVhY2hlci0yOTYyMzg5,Raymond Chou,Mathematics,4.9,2.8,79,97.4684
+VGVhY2hlci0xNjExOTEx,Carolyn Kurle,Biology,4.6,2.3,73,100.0
+VGVhY2hlci01NzQ2MDU=,Kuiyi Shen,Art History,3.8,1.9,71,87.0968
+VGVhY2hlci0yMzA5NzY5,Eric Steiner,Psychology,4.7,2.7,60,91.6667
+VGVhY2hlci0yMTU2Mjcx,Michael McKay,Business,2.5,2.9,58,34.4828
+VGVhY2hlci0xMDI4MzY2,Katherine Barbeau,Oceanography,3.6,1.7,57,51.2821
+VGVhY2hlci0yNDcwNzE4,Linnea Wilder,Anthropology,3.8,2.5,56,74.5455
+VGVhY2hlci01NjY4Njc=,Bo Li,Mathematics,3.4,3.3,55,66.6667
+VGVhY2hlci0xOTk1NzI5,Kevin Lewis,Sociology,4.7,2.7,48,92.6829
+VGVhY2hlci0xNzA4NjI=,John Kosmatka,Engineering,2.5,4.0,44,13.0435
+VGVhY2hlci0yOTQ2Nzcy,Jason Bartulis,English,3.1,3.9,41,53.6585
+VGVhY2hlci0zMDIwMjUw,Eric Morgan,Cognitive Science,4.2,2.1,40,84.6154
+VGVhY2hlci0xODY4MDEw,Dusan Keres,Physics,2.5,4.0,38,35.1351
+VGVhY2hlci0xMDM3NjE4,Maureen Feeley,Political Science,4.3,2.6,34,73.6842
+VGVhY2hlci0yMTEzMDM3,Simeon Man,History,4.7,2.2,32,96.6667
+VGVhY2hlci0yNjQ5MDU1,Timothy Wagner,Management,3.1,3.9,28,50.0
+VGVhY2hlci0yMjk1MTcx,Piya Pal,Engineering,3.0,4.4,27,51.8519
+VGVhY2hlci0yMzIxNTUx,Natalye Pass,History,3.5,3.7,27,66.6667
+VGVhY2hlci0xMjEwOTg3,Josh Figueroa,Chemistry,3.0,3.6,23,25.0
+VGVhY2hlci0xNDIzNTgx,Saba Bazargan,Philosophy,4.3,2.8,23,76.9231
+VGVhY2hlci0xMTc1MjI2,Qiang Zhu,Engineering,3.6,2.5,17,61.5385
+VGVhY2hlci0zMTQ3NTU1,Achinta Nandi,Mathematics,2.4,4.0,13,53.8462
+VGVhY2hlci0zMDg2NDM5,Francesca Balboni,Visual Arts,3.1,2.2,13,61.5385
+VGVhY2hlci05MzUzOTM=,Francesco Lanza Di Scalea,Engineering,3.5,2.7,11,50.0
+VGVhY2hlci02ODc0OTI=,Kim Walsh,Theater,4.0,2.3,11,88.8889
+VGVhY2hlci0yODkzMjA3,Patricia Marechal,Philosophy,4.9,2.5,11,100.0
+VGVhY2hlci0zMDE3OTIw,Hoan Nguyen,Languages,4.9,2.6,8,100.0
+VGVhY2hlci0yMDM2Mzg5,Michael Tolley,Engineering,3.4,3.1,7,40.0
+VGVhY2hlci0zMDUyODYx,Patrick Rohner,Biology,3.3,3.0,6,50.0
+VGVhY2hlci0zMDY1ODcy,Amna Salam,Political Science,3.8,2.3,4,75.0
+VGVhY2hlci0zMDgxNzky,Robert  Heath,Electrical Engineering & Computer Science,3.0,3.0,3,66.6667
+VGVhY2hlci0yOTE2NDMw,Daniel Grier,Computer Science,3.7,3.7,3,66.6667
+VGVhY2hlci0yOTM1NDI3,Anisa Flowers,Languages,5.0,3.3,3,100.0
+VGVhY2hlci0zMDE4NzMx,Yuko Tipton,Languages,5.0,2.5,2,100.0
+VGVhY2hlci0zMDE3NzUx,Dan Yavorsky,Management,5.0,2.5,2,100.0
+VGVhY2hlci0zMTA3Nzc5,Sara Esfahani,Economics,3.0,2.0,2,50.0
+VGVhY2hlci0yNjA2MDMx,Kimberly Schurmeier,Chemistry,3.8,3.5,253,72.7273
+VGVhY2hlci0xOTg1OTc1,Brian Leigh,Chemistry,3.8,3.8,130,68.5484
+VGVhY2hlci0yMzM3MDc0,Benjamin Ochoa,Computer Science,1.8,4.3,116,16.3793
+VGVhY2hlci02MDUwNjQ=,Curt Schurgers,Engineering,4.1,3.8,76,78.125
+VGVhY2hlci02MDg5NjM=,Nancy Gilson,Writing,3.7,3.1,71,50.0
+VGVhY2hlci00MDc4NDE=,Pam Reinagel,Biology,3.0,2.7,59,47.3684
+VGVhY2hlci02MTkzOTk=,Todd Salovey,Theater,4.6,1.4,58,86.9565
+VGVhY2hlci0yNDM5MzQ1,William Styler,Linguistics,4.9,2.2,47,95.7447
+VGVhY2hlci0xMjYxMzA4,Doug Nitz,Cognitive Science,3.9,3.0,36,45.4545
+VGVhY2hlci0xNzk0MzQ2,Jelena Bradic,Mathematics,2.8,4.1,35,42.1053
+VGVhY2hlci0xODIwMDI0,Makeba Jones,Education,5.0,1.7,30,100.0
+VGVhY2hlci0yODEyOTcy,Ethan Hurwitz,Psychology,3.8,3.4,28,64.2857
+VGVhY2hlci0yNTQ0OTcw,Nidhi Ahuja,Biology,4.2,3.0,26,84.6154
+VGVhY2hlci03NTY4MDU=,Mark Guirguis,Theater,3.9,2.4,26,64.2857
+VGVhY2hlci01NjQ4NjM=,Meg Wesling,Literature,4.3,2.6,25,91.6667
+VGVhY2hlci0zMDQxMjkw,Guadalupe  Garcia,Urban Planning,1.6,3.8,23,8.6957
+VGVhY2hlci01NTYyNzQ=,Steven Parish,Anthropology,3.8,2.1,22,75.0
+VGVhY2hlci0yNjcwNDgy,Itay Budin,Chemistry,5.0,3.1,18,100.0
+VGVhY2hlci01NzM5Njg=,Mark Dresser,Music,2.7,3.0,13,16.6667
+VGVhY2hlci0yNzc4NjQz,Keolu Fox,Anthropology,3.5,2.6,13,61.5385
+VGVhY2hlci0yOTg2ODE5,Jennifer  Haase,Biology,1.6,2.8,12,8.3333
+VGVhY2hlci0zMDY4NDM2,Matthew Stone,Public Health,4.0,3.6,5,60.0
+VGVhY2hlci0zMTI5NDI4,Eve Eure,Literature,4.0,2.0,2,100.0
+VGVhY2hlci0zMTQ1OTE2,Rachel Dudley,Linguistics,1.0,3.5,2,0.0
+VGVhY2hlci0yODA2OTQ5,Johan Perols,Management,4.0,4.0,1,100.0
+VGVhY2hlci0xNzM5MDI3,Steve Levkoff,Economics,4.1,3.3,359,68.2464
+VGVhY2hlci0xMTk0NzMx,Kim Albizati,Chemistry,4.3,3.2,230,77.3438
+VGVhY2hlci0yMjgzOTEz,Quang Bach,Mathematics,3.6,3.6,217,66.8203
+VGVhY2hlci00MjQ3NjU=,Philip Roeder,Political Science,4.2,2.9,118,79.661
+VGVhY2hlci0yNDY3ODE3,Andrew Meyertholen,Physics,4.5,3.4,92,90.2174
+VGVhY2hlci0zMDg0OTI=,Guershon Harel,Mathematics,2.4,3.9,92,25.7576
+VGVhY2hlci04NTc4ODU=,Thomas Powell,Computer Science,2.5,3.4,74,30.303
+VGVhY2hlci00NzczNDU=,Deborah Hertz,History,3.2,2.2,67,38.4615
+VGVhY2hlci01NjM4MTU=,William Griswold,Computer Science,1.8,3.9,47,10.2564
+VGVhY2hlci02MzI2OTQ=,Tim Gentner,Psychology,3.5,3.2,40,73.3333
+VGVhY2hlci0yNjA3MTcw,Geoffrey West,Humanities,4.0,2.9,38,76.3158
+VGVhY2hlci0xNDA2MzIz,Prashant Bharadwaj,Economics,3.6,3.6,34,59.2593
+VGVhY2hlci0yOTE1NjU4,Annika Stone,Anthropology,4.6,1.8,30,93.3333
+VGVhY2hlci0yMjc2NTU4,Danna Zhang,Mathematics,4.3,3.1,28,82.1429
+VGVhY2hlci0yOTQyNzY0,William Molloie,Accounting,2.6,3.9,27,40.7407
+VGVhY2hlci0zNTI4MTk=,Michael Hardimon,Philosophy,3.3,3.9,27,60.0
+VGVhY2hlci0zMDE4NzM0,Christopher Shields,Philosophy,4.0,3.1,24,79.1667
+VGVhY2hlci0yODIyOTYy,Vincent Pham,Writing,2.6,3.6,22,45.4545
+VGVhY2hlci0yNzc3ODIy,Richard Pitt,Sociology,3.3,3.4,18,44.4444
+VGVhY2hlci0zMDQ2NDQz,Mathew Holloway,Writing,1.9,2.7,17,23.5294
+VGVhY2hlci0yODY0NDU=,Leonid Butov,Physics,2.8,1.8,16,75.0
+VGVhY2hlci0yOTU2OTUw,Toni Lampell,Languages,1.9,3.6,14,21.4286
+VGVhY2hlci0yODk5NjU5,Aram Grigoryan,Economics,4.9,2.5,13,100.0
+VGVhY2hlci0yODg5MDQw,Andrew Barton,Biology,3.8,3.1,11,72.7273
+VGVhY2hlci0yMTY1Mjk2,Ohnishi Takae,Music,4.3,1.9,10,100.0
+VGVhY2hlci0zMDg0NDI2,Abdoulaye Ndao,Electrical Engineering & Computer Science,4.8,4.4,8,75.0
+VGVhY2hlci0yOTYyNTc3,Alexander Fattal,Communication,4.0,2.8,8,75.0
+VGVhY2hlci0yOTYzMzQ2,Emma Uriarte,Writing,5.0,2.0,8,100.0
+VGVhY2hlci0yOTk0NTk1,Camila Huerta Alvarez,Sociology,3.3,2.0,7,57.1429
+VGVhY2hlci0zMTUwMzYx,Enrique Sepulveda,Ethnic Studies,3.2,1.4,5,60.0
+VGVhY2hlci0zMTU5NDg5,Lauren Shipp,Oceanography,4.0,3.0,2,50.0
+VGVhY2hlci0zMTU1Njk3,Malik Gaines,Visual Arts,2.0,2.0,1,-1.0
+VGVhY2hlci0xNTYxNzA=,Mary Boyle,Cognitive Science,3.3,3.1,240,48.855
+VGVhY2hlci0xODI5ODA5,Philbert Tsai,Physics,3.5,3.5,173,58.7209
+VGVhY2hlci0yMjc1NDYy,Tin Yiu Lam,Chemistry,2.7,3.9,150,44.0
+VGVhY2hlci0yMDQ2ODI3,Yingjun Cao,Computer Science,4.0,3.1,125,73.1481
+VGVhY2hlci0yMDc2ODQz,Marina Langlois,Data Science,3.4,3.7,118,59.0476
+VGVhY2hlci0zMDE2NjE4,Julia Ortony,Chemistry,4.3,3.1,113,85.8407
+VGVhY2hlci0yMjM4NjM2,Catalina Reyes-Gonzalez,Biological Sciences,3.8,3.8,107,68.2243
+VGVhY2hlci0yMjYzNjEy,Nirelia Moranton,Psychology,3.1,4.1,101,49.505
+VGVhY2hlci0yMTc0Mzc=,Timothy Rickard,Psychology,3.4,2.9,92,55.5556
+VGVhY2hlci0yOTc2NTU2,Hsiao-Bing Cheng,Mathematics,1.9,4.3,91,20.8791
+VGVhY2hlci0xODI2MjQx,Megan Strom,History,3.7,2.3,61,82.7586
+VGVhY2hlci0yNzcxNjIw,Soohyun Liao,Data Science,2.3,3.6,55,36.3636
+VGVhY2hlci0yNDg1MTAx,John Eldon,Computer Science,2.3,3.8,39,30.7692
+VGVhY2hlci0zMDE5MzE2,William Wesley,Mathematics,3.8,3.2,39,74.359
+VGVhY2hlci0yOTE0MTMy,Julia Adrian,Psychology,3.3,3.8,36,47.2222
+VGVhY2hlci0zNTA2OTE=,Craig Callender,Philosophy,3.5,2.7,22,60.0
+VGVhY2hlci0xOTczODMy,Fernando  Dominguez Rubio,Communication,2.6,4.0,21,38.0952
+VGVhY2hlci0zMTA3Nzg4,Zachary Brants,Philosophy,3.0,2.4,20,47.3684
+VGVhY2hlci0yMTIwMTU0,Lane Kenworthy,Sociology,4.0,2.1,20,70.0
+VGVhY2hlci0xNTA5MTc2,Kyong Park,Art,3.0,2.6,19,60.0
+VGVhY2hlci0xODQzMjU1,Mariana Wardwell,Visual Arts,4.1,2.4,13,80.0
+VGVhY2hlci0yNTgwMzEw,Nicole Miller,Art,1.4,3.6,9,11.1111
+VGVhY2hlci0yODg2MTE2,Michael Coblenz,Computer Science,3.2,3.7,9,44.4444
+VGVhY2hlci0yOTk1NTkx,Pablo Victoria Torres,Sociology,5.0,1.4,8,100.0
+VGVhY2hlci0yOTA0MDQ4,Rosie Bermudez,History,5.0,2.7,7,100.0
+VGVhY2hlci0zMTM4NzM4,Gal Mishne,Computer Science,1.6,4.0,5,0.0
+VGVhY2hlci0zMTUxNTA4,Samantha Trumbo,Science,5.0,1.7,3,100.0
+VGVhY2hlci0yNjgxNTAz,Malgorzata Herc-Balaszek,Art,4.5,2.0,2,100.0
+VGVhY2hlci0yMjE3NDA=,Randolph Hampton,Biology,4.2,3.2,124,73.0769
+VGVhY2hlci0yMjY3NzU4,Phoebe Bronstein,English,3.5,2.4,58,68.9655
+VGVhY2hlci0yMjYwNzI0,Valerie Schmidt,Chemistry,3.2,4.1,46,48.8889
+VGVhY2hlci0yNTg1MTc0,Matthew Flagg,Biological Sciences,3.4,3.2,37,59.4595
+VGVhY2hlci05NTIxNw==,Joel Conte,Engineering,4.3,3.8,32,100.0
+VGVhY2hlci0zMDE2Njkw,Alex Guseman,Chemistry,2.3,3.2,30,23.3333
+VGVhY2hlci0xNDEwNTEx,Elizabeth Butler,Education,2.8,2.9,28,36.0
+VGVhY2hlci0zMTI4NTEx,Zongxin Yu,Mathematics,4.5,3.3,26,84.6154
+VGVhY2hlci0yNjAwMzE3,Anastasia Kiyonaga,Cognitive Science,4.5,2.2,26,84.6154
+VGVhY2hlci0yNDk5MjEx,Heather Grandin,Biological Sciences,3.6,3.6,21,61.9048
+VGVhY2hlci0yOTY2MTY3,Melissa  Warstadt ,Human Development,4.9,1.9,17,100.0
+VGVhY2hlci0xNTE0NTk3,William Tronzo,Visual Arts,4.5,1.7,15,91.6667
+VGVhY2hlci0yNzc5NTUx,Sara Jackrel,Biology,1.7,4.5,15,13.3333
+VGVhY2hlci0yMzQ4NDgy,Benjamin Cowan,History,4.8,2.6,12,100.0
+VGVhY2hlci0xNTE5MzU5,Shane McClain,Languages,2.7,3.4,11,40.0
+VGVhY2hlci0zNzQ2Mzg=,Yu Hwa Lo,Engineering,1.9,3.6,8,25.0
+VGVhY2hlci0yNTAwMTk1,Ashley Juavinett,Biology,3.1,3.6,7,57.1429
+VGVhY2hlci0yOTc5OTg3,Brenda Wilson,Anthropology,3.4,2.0,7,85.7143
+VGVhY2hlci0yNTczODAw,Joel Palhegyi,Writing,3.3,3.0,6,80.0
+VGVhY2hlci0yNjUzNzMx,Maria Caligagan,Theater,5.0,1.5,4,100.0
+VGVhY2hlci0zMTU2MjM3,Jackson  Kroopf,Film,4.0,3.0,2,100.0
+VGVhY2hlci0yOTg3MTQ2,Joey Engelberg,Management,4.0,4.0,2,50.0
+VGVhY2hlci0zMTYwODgz,Shabnam Semnani,Engineering,3.0,4.0,1,0.0
+VGVhY2hlci0zMTM2NDkw,Joanne Park,Film,4.0,2.0,1,100.0
+VGVhY2hlci03NzU0NjM=,Ann Woods,Art History,4.7,2.2,107,91.0448
+VGVhY2hlci0yNjc5NzAy,Clara Meaders,Biological Sciences,4.5,3.2,61,83.6066
+VGVhY2hlci0yNjU5NjE0,Amy Kennemore,International Studies,4.8,1.8,42,95.2381
+VGVhY2hlci01MzI4OTU=,Piotr Winkielman,Psychology,3.4,2.6,37,30.7692
+VGVhY2hlci0yNzA0OTk2,Juli (JB) Hinds,Urban Studies,3.3,3.9,19,47.3684
+VGVhY2hlci0xNTQ4MTEz,Suzan Dennis,Accounting,3.9,2.3,18,60.0
+VGVhY2hlci0zMDYzNDk1,Jordan Escobar,Writing,5.0,2.0,10,100.0
+VGVhY2hlci0zMTQ3MTQ2,Jack Wesley,Mathematics,4.4,3.0,7,85.7143
+VGVhY2hlci0yNzgzOTcx,Amy Non,Anthropology,4.5,2.8,4,100.0
+VGVhY2hlci0zMTA3MDg0,Sean Sprague,Visual Arts,4.3,1.7,3,66.6667
+VGVhY2hlci0xOTgyNjM4,Mica Pollock,Education,5.0,1.0,2,100.0
+VGVhY2hlci0zMTU1NzEw,Sora Woo,Music,4.5,1.0,2,100.0
+VGVhY2hlci01MjE2MTE=,Maria Teresa Candido,Economics,3.5,3.0,150,73.2143
+VGVhY2hlci0yMjk4NjYw,Giorgia Pirino,Biological Sciences,2.4,3.5,68,33.8235
+VGVhY2hlci0xMTE3MDI5,Sarah Creel,Cognitive Science,3.2,2.9,61,57.6923
+VGVhY2hlci04MzAzNDA=,Harvey Goldman,Sociology,3.9,3.8,56,56.5217
+VGVhY2hlci0xMTcyNzc2,Jacques Verstraete,Mathematics,4.3,2.8,52,83.3333
+VGVhY2hlci02Nzc1ODQ=,Lawrence Broz,International Studies,3.1,3.3,32,40.0
+VGVhY2hlci0yMzM0NTI4,Alexander Cloninger,Mathematics,4.1,3.4,30,83.3333
+VGVhY2hlci0yODA3MDE1,Marc Marino,Biological Sciences,3.7,3.9,29,68.9655
+VGVhY2hlci0yMzk1NDYx,Niall Ivan Twohig,English,5.0,2.1,24,100.0
+VGVhY2hlci0zMDE3NTU0,Ivonne González-Gamboa,Biology,4.3,2.2,17,81.25
+VGVhY2hlci0yNDUzNDc2,Reuven Brandt,Philosophy,4.7,2.3,14,92.8571
+VGVhY2hlci0yNjcxOTE1,Clark Gibson,International Studies,3.5,3.0,12,58.3333
+VGVhY2hlci0xMjg5ODI5,Britta Larsen,Psychology,4.6,2.8,10,100.0
+VGVhY2hlci0yODkwMDA1,Marc Marino,Biology,4.6,3.4,8,85.7143
+VGVhY2hlci0yOTA0NTI3,Eric Mooshagian,Science,4.5,3.6,8,85.7143
+VGVhY2hlci0yNjc2MzY2,Dinesh Bharadia,Electrical Engineering & Computer Science,2.1,3.9,8,25.0
+VGVhY2hlci0yOTg5NDY4,Parinaz Naghizadeh,Engineering,3.9,3.8,8,62.5
+VGVhY2hlci0zMDI0MjYy,Pepe Rojo,Communication,4.3,2.2,6,83.3333
+VGVhY2hlci0yOTkyNzUz,Albert Chern,Computer Science,4.5,2.0,4,100.0
+VGVhY2hlci0yNTIzNzU=,Patrick Patterson,History,4.1,2.7,116,80.0
+VGVhY2hlci0yNTU0MTA1,Adalbert Gerald Soosai Raj,Computer Science,3.5,3.3,69,57.971
+VGVhY2hlci0yNzMxODk2,Latisha Hammond,Biological Sciences,4.0,1.8,56,83.9286
+VGVhY2hlci0xNDExMTA5,Emily Troemel,Biology,3.2,3.1,54,42.8571
+VGVhY2hlci0yNDI2ODIx,Kristina Markman,Humanities,3.7,3.6,50,70.0
+VGVhY2hlci0zNTM1Nzc=,James Nieh,Biology,4.8,2.6,47,94.4444
+VGVhY2hlci05OTk2MDE=,Monte Johnson,Philosophy,4.3,3.3,39,82.1429
+VGVhY2hlci0xMDI3ODQy,Ella Tour,Biology,3.6,3.0,33,44.4444
+VGVhY2hlci0yMTEwNDYy,Miles Jones,Computer Science,3.7,3.6,29,72.4138
+VGVhY2hlci0xMDk1Mjc0,Anthony Burr,Music,4.0,2.3,29,75.0
+VGVhY2hlci0xODUwNjc1,Vanesa Ribas,Sociology,3.8,2.7,25,88.8889
+VGVhY2hlci0yOTc5MjE1,Benjamin Noble,Political Science,5.0,1.4,23,100.0
+VGVhY2hlci0yODgzOTMz,Michael Morshed,English,4.6,2.8,20,90.0
+VGVhY2hlci0zMDMyNjcw,Emily Windham,Writing,5.0,1.9,7,100.0
+VGVhY2hlci0yOTg3ODA2,John Arroyo,Urban Studies,5.0,3.0,5,100.0
+VGVhY2hlci0yODAzNDIw,Heather Daly,Environment,3.0,2.4,5,40.0
+VGVhY2hlci0zMTA3NDQy,Cory  Smythe,Music,3.8,1.0,4,75.0
+VGVhY2hlci05MTUyNjk=,Jana Fortier,Anthropology,4.1,2.6,42,78.5714
+VGVhY2hlci0yNzM1Mzkw,Lutz Warnke,Mathematics,4.2,3.1,40,82.5
+VGVhY2hlci0xMTAzMDYy,Michael Trigilio,Graphic Arts,4.4,2.2,40,75.0
+VGVhY2hlci0yNTc2NTA5,Troy Kokinis,Ethnic Studies,3.2,2.4,28,59.2593
+VGVhY2hlci00NDM1NDk=,Pavel Pevzner,Computer Science,2.3,4.0,18,7.6923
+VGVhY2hlci0yNjQ1ODgz,Joshua Tonies,Art,4.8,1.6,17,94.1176
+VGVhY2hlci0yNTIzODU4,Jerrod Heiser,Writing,4.2,3.1,17,82.3529
+VGVhY2hlci0zMTQ2NTA1,Matthew  Henson,Music,4.8,1.8,8,100.0
+VGVhY2hlci0zMTM5MDE5,Celeste Morales,English,1.0,4.0,1,0.0
+VGVhY2hlci00OTI5MDk=,Christine Harris,Psychology,3.1,3.2,64,40.0
+VGVhY2hlci00ODI5MDM=,Sanjoy Dasgupta,Computer Science,4.6,3.0,49,89.4737
+VGVhY2hlci0xNzIwMDY2,Deborah Yelon,Biology,3.9,3.5,42,69.2308
+VGVhY2hlci0yNjYxNjIz,Jason Fleischer,Cognitive Science,2.7,2.8,42,45.2381
+VGVhY2hlci0yNjMxMjY=,Robert Kluender,Linguistics,3.9,3.6,36,66.6667
+VGVhY2hlci0zMDQ2MjI1,Wei Yin,Mathematics,4.6,2.9,33,87.8788
+VGVhY2hlci0yNTg2OTE0,Xinwei Ma,Economics,3.7,3.1,21,66.6667
+VGVhY2hlci0yNTgxNDY2,Machel Morrison,Engineering,3.7,4.3,12,66.6667
+VGVhY2hlci0zMDE5MzM2,Christine Crofts,Sociology,5.0,2.0,11,100.0
+VGVhY2hlci0yNzEwMjM4,Agustina Paglayan,Political Science,3.0,3.8,6,33.3333
+VGVhY2hlci0yOTIwMjAw,Patricia Stone,Visual Arts,3.2,1.4,5,60.0
+VGVhY2hlci0zMDcxODUz,Noelia Dominguez,Literature,4.8,1.6,5,100.0
+VGVhY2hlci0zMTQ3MTcz,Kyle Blair,Music,5.0,1.2,5,100.0
+VGVhY2hlci0yOTA2MTEw,Julia Sloane,Anthropology,4.5,2.0,2,100.0
+VGVhY2hlci0xMDM0ODc1,David Fisk,Political Science,4.3,2.7,80,86.3636
+VGVhY2hlci0xNDc0MTM=,Karen Ferree,Political Science,4.1,2.6,65,93.1034
+VGVhY2hlci04NTIyMjY=,Patrick Anderson,Communication,4.2,2.6,45,61.9048
+VGVhY2hlci0zMDc1Mjc5,Robert Webber,Mathematics,2.8,4.2,10,40.0
+VGVhY2hlci0zMDc3NTg4,Kathryn Garcia,English,4.9,1.2,10,100.0
+VGVhY2hlci0yMzIzMTI2,Sachiko Kamioka,International Studies,5.0,2.8,6,100.0
+VGVhY2hlci0zMDM3MTE2,Yizhen Zhao,Mathematics,2.5,3.8,63,44.4444
+VGVhY2hlci0zMDY3MTY2,Pranav Upadrashta,Mathematics,3.4,2.6,16,62.5
+VGVhY2hlci05OTM3Mg==,Alain J J Cohen,Literature,3.4,2.5,34,60.0
+VGVhY2hlci0yMjM4Nzc0,Alina Schimpf,Chemistry,4.3,3.4,19,94.7368
+VGVhY2hlci0yNzg0MDIz,Wentao Ma,Writing,4.1,3.4,7,85.7143
+VGVhY2hlci0xOTY3NDk3,Thomas Bussey,Chemistry,4.1,3.3,207,69.0058
+VGVhY2hlci04OTk5MjM=,Matthew Herbst,Humanities,4.6,3.1,137,90.566
+VGVhY2hlci0zNjE4ODY=,Kenneth Anderson,Music,5.0,1.1,126,97.7273
+VGVhY2hlci0zNDk5MjE=,Ivan Evans,Sociology,4.0,2.6,62,50.0
+VGVhY2hlci0xMDAzOTA3,Joseph Simpson,Chemistry,2.9,3.4,54,37.037
+VGVhY2hlci02MTU2Nzg=,Massimo Franceschetti,Engineering,2.8,3.8,46,48.0
+VGVhY2hlci0yOTk5MDUz,Edwin Solares,Computer Science,1.6,4.1,33,15.1515
+VGVhY2hlci01ODQ5MDY=,Michael Provence,History,4.2,3.2,31,90.9091
+VGVhY2hlci0yMzk5NTAz,Saharnaz Baghdadchi,Engineering,4.4,3.5,30,86.6667
+VGVhY2hlci0yMzUxNDk2,Pascal Gagneux,Biology,4.7,2.5,21,95.2381
+VGVhY2hlci0xMTgyMDI2,Paul Siegel,Engineering,3.6,4.0,19,52.9412
+VGVhY2hlci0xNjU5NjU5,Zhaowei Liu,Engineering,2.8,3.3,14,37.5
+VGVhY2hlci0yNDY4NTI1,Nadir Weibel,Computer Science,2.1,2.7,11,18.1818
+VGVhY2hlci0zMTMwOTUw,Matthew Hensen,Music,5.0,2.0,2,100.0
+VGVhY2hlci0yNjI2MDIy,Jessica Rusert,Biological Sciences,2.8,3.7,139,44.6043
+VGVhY2hlci00NzAzNjA=,John Skrentny,Sociology,4.6,2.4,125,89.8551
+VGVhY2hlci0xMDYxNTI4,Robert Pomeroy,Chemistry,3.2,3.9,103,42.0
+VGVhY2hlci0yNzIzNTEx,Ryan Hodson,Finance,5.0,4.9,69,100.0
+VGVhY2hlci05MTY1NDg=,Alon Orlitsky,Computer Science,2.6,4.3,59,33.3333
+VGVhY2hlci0yNjc3NTcz,Alison Meyer,Business,2.4,2.8,29,31.0345
+VGVhY2hlci0yNjcwMjk0,Edward Kelting,Classics,4.6,2.8,24,91.6667
+VGVhY2hlci0xODgzODIw,Xuemei Huang,Chemistry,2.7,3.7,16,40.0
+VGVhY2hlci0yNjcwNzcx,Nir Shafir,History,3.0,3.2,6,40.0
+VGVhY2hlci0yNzk4MTk=,Daniel Widener,History,3.7,2.6,106,92.5926
+VGVhY2hlci0yNTc1NDA1,Christine Payne,Sociology,4.9,1.9,36,97.2222
+VGVhY2hlci0xMTk2MDIw,Dennis Childs,Literature,4.4,3.1,31,75.0
+VGVhY2hlci0xODg2ODcy,Tricia Gallagher-Geurtsen,Education,4.2,2.2,12,75.0
+VGVhY2hlci0zMDAyOTE3,Nile  Elwardani,Health Science,3.2,2.3,6,33.3333
+VGVhY2hlci0yODk4Mjk5,Gerardo Perez Cavazos,Finance,4.0,3.0,2,50.0
+VGVhY2hlci0yNTQyODM3,Rob Knight,Microbiology,3.0,3.0,1,100.0
+VGVhY2hlci0yMTg4MDk4,Erin Suzuki,Literature,4.7,2.3,34,91.1765
+VGVhY2hlci0yMjY1Mjcz,Marko Lubarda,Engineering,4.1,2.8,29,79.3103
+VGVhY2hlci0yNzQxOTQ3,Alyssa Powell,Chemical Engineering,4.9,3.0,10,100.0
+VGVhY2hlci0yODg4MzIy,Steve Wu,Economics,5.0,3.6,9,88.8889
+VGVhY2hlci0yODgxMjQ5,Hanna Tawater,Writing,5.0,2.0,4,75.0
+VGVhY2hlci0zMDUyMzgz,Martin Zettersten,Cognitive Science,5.0,2.0,3,100.0
+VGVhY2hlci05MzQ3MTk=,Michael Stepner,Social Science,1.0,5.0,1,0.0
+VGVhY2hlci0yNTI1ODU3,Celeste Pilegard,Psychology,4.6,2.3,87,90.8046
+VGVhY2hlci0xMzYzOTg3,Antony Lyon,Humanities,4.1,3.2,70,77.3585
+VGVhY2hlci0yNjMwMzg0,Janna Dickenson,Psychology,3.4,2.9,65,53.8462
+VGVhY2hlci0zMDgzNTc3,Priyanga Ganesan,Mathematics,2.2,3.9,34,35.2941
+VGVhY2hlci0zMTQ3Nzg5,Antonio Martinez,Languages,5.0,2.0,1,100.0
+VGVhY2hlci0xMDg4MTk2,Ryan Kastner,Engineering,3.9,3.2,26,80.0
+VGVhY2hlci0yMTE4MTQ3,Kaixuan Ni,Physics,4.5,2.2,19,93.3333
+VGVhY2hlci0zMTA3NTU1,Jennifer Carter,English,2.4,3.6,5,40.0
+VGVhY2hlci0xMzc2NzQ4,Steve Barrera,Cognitive Science,4.9,2.3,117,98.8235
+VGVhY2hlci04MjU2NjU=,Robert Bitmead,Engineering,2.6,4.1,39,50.0
+VGVhY2hlci0yODkzNjI1,Yiying Zhang,Computer Science,4.0,3.0,2,50.0
+VGVhY2hlci0zMTUyOTQ2,Qipeng Liu,Computer Science,3.0,5.0,1,0.0
+VGVhY2hlci02MTY1MDc=,Amy Pasquinelli,Biology,3.9,3.9,51,51.6129
+VGVhY2hlci0xMjY5ODIz,Karthik Muralidharan,Economics,3.4,4.1,22,42.8571
+VGVhY2hlci05NDY5Nzg=,Sebastian Saiegh,Political Science,3.1,2.8,18,85.7143
+VGVhY2hlci0yODE5ODYx,Bailee Chandler,Literature,4.7,3.3,7,100.0
+VGVhY2hlci0yOTUyNjE3,Charlene Holkenbrink-Monk,Sociology,4.3,3.3,6,83.3333
+VGVhY2hlci0yNzE3OTQ2,Nathan Moeder,Urban Planning,1.6,4.6,5,0.0
+VGVhY2hlci0xODAyOTgx,Adrian Ioana,Mathematics,4.2,3.4,56,89.1304
+VGVhY2hlci0xMjk1NjA3,S. Leutgeb,Biology,3.3,3.3,39,54.5455
+VGVhY2hlci0yOTU3ODM=,Dale Squires,Economics,3.7,2.6,36,42.8571
+VGVhY2hlci0yNDM4ODA3,Justin Eldridge,Data Science,4.9,3.0,27,100.0
+VGVhY2hlci0yNzQ2OTg5,Fabian Trottner,Economics,4.4,3.2,19,78.9474
+VGVhY2hlci0yNjAzNzU1,Barbara Bliss,Business,4.3,3.4,14,71.4286
+VGVhY2hlci0yODYzNTM4,Mara Harrell,Philosophy,3.8,1.8,8,62.5
+VGVhY2hlci0yOTU5NDM3,Susan Glockner,Health Science,3.5,1.8,8,87.5
+VGVhY2hlci0zMDMzMzUx,Erik Johnson,Management,4.4,2.2,5,80.0
+VGVhY2hlci0zMTI2ODM1,Isidora Echenique,Biology,1.6,4.8,5,20.0
+VGVhY2hlci0yOTg3Njc5,Larry Frank,Urban Studies,2.8,3.8,4,25.0
+VGVhY2hlci0yOTE3NjMx,Eddy Chen,Philosophy,5.0,2.0,3,66.6667
+VGVhY2hlci0zMTA4OTk1,Tania Delgado,Cognitive Science & Computer Engineering,3.5,3.0,2,50.0
+VGVhY2hlci0xMzQwMDE=,Glenn Smith,Political Science,4.1,3.2,120,66.6667
+VGVhY2hlci05ODA2NDE=,Scott Desposato,Political Science,3.4,3.2,92,61.2903
+VGVhY2hlci0xMzQ1NDg=,Branislav Slantchev,Political Science,3.7,3.5,89,41.1765
+VGVhY2hlci04MTUxMDM=,Teddy Cruz,Visual Arts,3.0,2.2,30,60.0
+VGVhY2hlci02ODM4MTE=,Martha Lampland,Sociology,1.9,3.1,28,0.0
+VGVhY2hlci0yNzcyMzIz,Paul Cao,Computer Science,3.4,3.6,26,65.3846
+VGVhY2hlci0yNjEwNzYw,Haijun Xia,Cognitive Science,3.1,3.0,9,55.5556
+VGVhY2hlci0zMDkyMDk1,Eva Fayman,Art,4.0,4.0,2,50.0
+VGVhY2hlci0zMDgzOTky,Jose Carvajal,Literature,5.0,1.5,2,100.0
+VGVhY2hlci0zMTE0Njgy,Ibrahim Al-Marashi,Visual Arts,5.0,1.0,1,100.0
+VGVhY2hlci0zNjA3MzM=,Stephan Anagnostaras,Psychology,3.8,2.8,68,77.7778
+VGVhY2hlci01Njk4NDQ=,James Hollan,Cognitive Science,2.9,3.4,43,33.3333
+VGVhY2hlci0yNzc0MjUy,Rodolphe Jazzar,Chemistry,4.4,3.0,29,86.2069
+VGVhY2hlci0yMjIyMTk0,Nur Duru,Writing,4.1,3.2,22,77.2727
+VGVhY2hlci0yOTkwNjMz,Nile El Wardani,Public Health,3.7,2.4,19,68.4211
+VGVhY2hlci02MTU2Nzk=,Gabriel Rebeiz,Engineering,3.7,4.4,17,71.4286
+VGVhY2hlci0zMTE0ODQw,Michelle Lou,Music,4.4,1.5,10,100.0
+VGVhY2hlci0zMTEwMDE1,Kevin Westerfeld,English,5.0,1.6,5,100.0
+VGVhY2hlci02MTM1Ng==,M.E. Stephens,Political Science,3.8,3.3,72,88.2353
+VGVhY2hlci0yNjgwMzM0,Lillian Walkover,Communication,3.1,3.1,37,45.9459
+VGVhY2hlci0zMTQ0MDUx,Amy Fox,Cognitive Science,3.4,2.6,12,58.3333
+VGVhY2hlci0yMjU5NTMx,Jo Jacob,Management,3.6,2.5,22,63.6364
+VGVhY2hlci0yMDU1OTE5,Jane Coulter,Writing,3.9,3.4,10,100.0
+VGVhY2hlci0yNzgwMTU2,Dovi Kacev,Biology,4.0,2.7,6,83.3333
+VGVhY2hlci0yNzA0NjIz,Michel Estefan,Sociology,4.4,2.8,40,77.5
+VGVhY2hlci00MjM3NTA=,Kamau Kenyatta,Music,4.7,1.7,33,100.0
+VGVhY2hlci0xNjc3NzAz,Benjamin Bergen,Cognitive Science,4.2,2.1,31,100.0
+VGVhY2hlci03NjI3MDk=,Xiao Wang,Languages,4.2,2.3,24,77.7778
+VGVhY2hlci0yODcxNzQ0,Jennifer Marchisotto ,English,3.7,2.6,21,76.1905
