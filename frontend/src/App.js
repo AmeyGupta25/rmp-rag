@@ -4,7 +4,6 @@ import axios from "axios";
 const API = process.env.REACT_APP_API_URL || "http://localhost:8000";
 
 const BLUE = "#1565C0";
-const BLUE_DARK = "#0D47A1";
 const GREEN = "#00897B";
 const RED = "#E53935";
 const GRAY = "#6B7280";
@@ -45,7 +44,7 @@ export default function App() {
 
   useEffect(() => {
     if (page === "professors") loadProfessors();
-  }, [page, profDept, profSort]);
+  }, [page, profDept, profSort, loadProfessors]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadProfessors = async () => {
     setProfLoading(true);
