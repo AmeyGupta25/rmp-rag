@@ -61,14 +61,24 @@ def upload_reviews():
 
     print(f"Done! {len(df)} reviews uploaded to Pinecone.")
 
-def query(question, top_k=8):
+def query(question, top_k=8, department=""):
     result = pc.inference.embed(
         model="multilingual-e5-large",
         inputs=[question],
         parameters={"input_type": "query"}
     )
     embedding = result[0].values
-    results = index.query(vector=embedding, top_k=top_k, include_metadata=True)
+    
+    filter_dict = {}
+    if department:
+        filter_dict = {"department": {"$eq": department}}
+    
+    results = index.query(
+        vector=embedding,
+        top_k=top_k,
+        include_metadata=True,
+        filter=filter_dict if filter_dict else None
+    )
     return [match["metadata"]["text"] for match in results["matches"]]
 
 if __name__ == "__main__":
