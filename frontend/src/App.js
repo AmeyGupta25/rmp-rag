@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 
 const API = process.env.REACT_APP_API_URL || "http://localhost:8000";
@@ -43,18 +43,18 @@ export default function App() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const loadProfessors = async () => {
+  const loadProfessors = useCallback(async () => {
     setProfLoading(true);
     const r = await axios.get(`${API}/professors`, {
       params: { department: profDept, sort: profSort, search: profSearch }
     });
     setProfessors(r.data.professors);
     setProfLoading(false);
-  };
+  }, [profDept, profSort, profSearch]);
 
   useEffect(() => {
     if (page === "professors") loadProfessors();
-  }, [page, profDept, profSort, loadProfessors]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [page, profDept, profSort, loadProfessors]);
 
   const ask = async (q) => {
     const question = q || input;
