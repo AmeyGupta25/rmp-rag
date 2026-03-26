@@ -30,10 +30,10 @@ An AI-powered chatbot for UCSD students to ask natural language questions about 
 
 ## How It Works
 
-1. **Scrape** -- 7,565 reviews from 500 UCSD professors are scraped from Rate My Professor
-2. **Embed** -- reviews are embedded using Pinecone's multilingual-e5-large model and stored in a Pinecone vector index
-3. **Retrieve** -- when a user asks a question, the most relevant reviews are retrieved via semantic search
-4. **Generate** -- Groq's LLaMA 3.3 70B model generates a grounded answer using the retrieved reviews as context
+1. **Scrape** -> 7,565 reviews from 500 UCSD professors are scraped from Rate My Professor
+2. **Embed** -> reviews are embedded using Pinecone's multilingual-e5-large model and stored in a Pinecone vector index
+3. **Retrieve** -> when a user asks a question, the most relevant reviews are retrieved via semantic search
+4. **Generate** -> Groq's LLaMA 3.3 70B model generates a grounded answer using the retrieved reviews as context
 
 ## Local Setup
 
