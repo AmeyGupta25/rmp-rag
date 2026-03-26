@@ -25,6 +25,7 @@ export default function App() {
   const [profDept, setProfDept] = useState("");
   const [profSort, setProfSort] = useState("rating");
   const [profLoading, setProfLoading] = useState(false);
+  const [coldStart, setColdStart] = useState(true);
   const bottomRef = useRef(null);
 
   const suggestions = [
@@ -66,6 +67,7 @@ export default function App() {
     try {
       const history = newMessages.slice(0, -1).map(m => ({ role: m.role, content: m.content }));
       const r = await axios.post(`${API}/ask`, { question, history, department });
+      setColdStart(false);
       setMessages([...newMessages, {
         role: "assistant",
         content: r.data.answer,
@@ -118,6 +120,18 @@ export default function App() {
 
       {page === "chat" && (
         <div style={{ maxWidth: 780, margin: "0 auto", padding: "12px 24px", display: "flex", flexDirection: "column", height: "calc(100vh - 80px)" }}>
+          {coldStart && (
+            <div style={{ background: "#FFF8E1", border: "1.5px solid #FFD54F", borderRadius: 10, padding: "10px 14px", marginBottom: 10, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ fontSize: 18 }}>⏳</span>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "#5D4037" }}>API may be waking up</div>
+                  <div style={{ fontSize: 12, color: "#795548" }}>The first response can take 20–30 seconds if the server hasn't been used recently. Hang tight!</div>
+                </div>
+              </div>
+              <button onClick={() => setColdStart(false)} style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: "#795548", lineHeight: 1, padding: "0 4px", flexShrink: 0 }}>✕</button>
+            </div>
+          )}
           <div style={{ marginBottom: 12 }}>
             <select value={department} onChange={e => setDepartment(e.target.value)} style={{ padding: "7px 12px", border: `1.5px solid ${BORDER}`, borderRadius: 8, fontSize: 13, color: TEXT, background: WHITE, cursor: "pointer", outline: "none" }}>
               <option value="">All Departments</option>
