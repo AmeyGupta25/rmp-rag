@@ -6,3 +6,4 @@ __pycache__/
 data/reviews.csv
 frontend/node_modules/
 frontend/build/
+.venv/

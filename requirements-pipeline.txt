@@ -1,0 +1,3 @@
+# Data pipeline (scrape, embed). Not needed by the API.
+-r requirements.txt
+requests==2.32.5

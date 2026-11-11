@@ -23,7 +23,7 @@ An AI-powered chatbot for UCSD students to ask natural language questions about 
 |---|---|
 | Scraping | Python, RMP GraphQL API |
 | Vector DB | Pinecone (multilingual-e5-large, 1024 dims) |
-| LLM | Groq (llama-3.3-70b-versatile) |
+| LLM | Groq (openai/gpt-oss-120b) |
 | Backend | FastAPI |
 | Frontend | React |
 | Hosting | Render (API), Vercel (frontend) |
@@ -33,7 +33,7 @@ An AI-powered chatbot for UCSD students to ask natural language questions about 
 1. **Scrape** -> 7,565 reviews from 500 UCSD professors are scraped from Rate My Professor
 2. **Embed** -> reviews are embedded using Pinecone's multilingual-e5-large model and stored in a Pinecone vector index
 3. **Retrieve** -> when a user asks a question, the most relevant reviews are retrieved via semantic search
-4. **Generate** -> Groq's LLaMA 3.3 70B model generates a grounded answer using the retrieved reviews as context
+4. **Generate** -> Groq's gpt-oss-120b model generates a grounded answer using the retrieved reviews as context
 
 ## Local Setup
 
@@ -48,7 +48,7 @@ An AI-powered chatbot for UCSD students to ask natural language questions about 
 cd rmp-rag
 python -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 ```
 
 Create a `.env` file in the root:

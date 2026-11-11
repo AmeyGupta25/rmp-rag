@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from groq import Groq
@@ -18,7 +18,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"), timeout=20, max_retries=1)
+GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 
 SYSTEM_PROMPT = """You are a helpful assistant for UCSD students trying to find the best professors.
 You are given real student reviews from Rate My Professor as context.
@@ -53,27 +54,34 @@ def ask(body: Question):
         last = history[-1].content if history else ""
         search_query = f"{last} {question}"
 
-    context_chunks = query(search_query, top_k=8, department=department)
-    context = "\n\n---\n\n".join(context_chunks)
+    try:
+        context_chunks = query(search_query, top_k=8, department=department)
+        context = "\n\n---\n\n".join(context_chunks)
 
-    messages = [
-        {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "system", "content": f"Context from Rate My Professor reviews:\n\n{context}"}
-    ]
+        messages = [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": f"Context from Rate My Professor reviews:\n\n{context}"}
+        ]
 
-    for msg in history[-6:]:
-        messages.append({"role": msg.role, "content": msg.content})
+        for msg in history[-6:]:
+            messages.append({"role": msg.role, "content": msg.content})
 
-    messages.append({"role": "user", "content": question})
+        messages.append({"role": "user", "content": question})
 
-    response = groq_client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=messages,
-        temperature=0.3,
-        max_tokens=500
-    )
-
-    answer = response.choices[0].message.content
+        response = groq_client.chat.completions.create(
+            model=GROQ_MODEL,
+            messages=messages,
+            temperature=0.3,
+            max_tokens=800,
+            reasoning_effort="low",
+        )
+        answer = response.choices[0].message.content
+        if not answer:
+            raise ValueError(f"empty answer (finish_reason={response.choices[0].finish_reason})")
+    except Exception as e:
+        # Upstream (Pinecone/Groq) text never reaches the client.
+        print(f"/ask upstream error: {type(e).__name__}: {e}")
+        raise HTTPException(status_code=502, detail="Couldn't generate an answer right now. Please try again.")
 
     professors_mentioned = extract_professors(answer)
 
@@ -85,6 +93,8 @@ def ask(body: Question):
     }
 
 def extract_professors(answer):
+    # gpt-oss writes names with no-break spaces ("Sanjoy\u202fDasgupta"); normalize before matching.
+    answer = answer.replace("\u202f", " ").replace("\u00a0", " ")
     try:
         df = pd.read_csv("data/professors.csv")
         mentioned = []

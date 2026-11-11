@@ -1,0 +1,4 @@
+-r requirements-pipeline.txt
+pytest
+ruff
+httpx
