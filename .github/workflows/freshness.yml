@@ -1,0 +1,43 @@
+name: Freshness
+
+on:
+  schedule:
+    - cron: "0 15 * * *"   # daily
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+  actions: write   # keepalive: each scheduled workflow re-enables the other
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+      # Checks the PUBLISHED data, not the raw files: raw is pushed even when a run fails,
+      # so only serving.duckdb's age says whether the site is current. Fails (and GitHub
+      # emails the owner) when it is over 8 days old or can't be read at all.
+      - name: Published data is recent
+        env:
+          BUCKET: ${{ vars.PROFAI_BUCKET }}
+        run: |
+          set -euo pipefail
+          modified=$(aws s3api head-object --bucket "$BUCKET" --key serving/serving.duckdb \
+            --query LastModified --output text)
+          test -n "$modified"
+          age=$(( ( $(date -u +%s) - $(date -u -d "$modified" +%s) ) / 86400 ))
+          echo "serving.duckdb last published $modified ($age days ago)"
+          test "$age" -le 8
+
+      - name: Keep scheduled workflows enabled
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api -X PUT "repos/${{ github.repository }}/actions/workflows/pipeline.yml/enable"
+          gh api -X PUT "repos/${{ github.repository }}/actions/workflows/freshness.yml/enable"
