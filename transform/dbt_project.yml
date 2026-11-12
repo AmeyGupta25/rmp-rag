@@ -1,0 +1,16 @@
+name: profai
+version: "1.0.0"
+profile: profai
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+
+vars:
+  raw_root: "{{ env_var('RAW_ROOT', 'data/raw') }}"
+
+models:
+  profai:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table

@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: stg_reviews
+    columns:
+      - name: review_id
+        data_tests: [unique, not_null]
+      - name: professor_id
+        data_tests: [not_null]
+      - name: reviewed_at
+        data_tests: [not_null]
+      - name: quality
+        data_tests:
+          - in_range:
+              arguments: {min_value: 1, max_value: 5}
+      - name: difficulty
+        data_tests:
+          - in_range:
+              arguments: {min_value: 1, max_value: 5}
+
+  - name: dim_professor
+    columns:
+      - name: professor_id
+        data_tests: [unique, not_null]
+      - name: name
+        data_tests: [not_null]
+      - name: avg_rating
+        data_tests:
+          - in_range:
+              arguments: {min_value: 0, max_value: 5}
+      - name: would_take_again_pct
+        data_tests:
+          - in_range:
+              arguments: {min_value: 0, max_value: 100}
+
+  - name: fct_review
+    columns:
+      - name: review_id
+        data_tests: [unique, not_null]
+      - name: professor_id
+        data_tests:
+          - relationships:
+              arguments: {to: ref('dim_professor'), field: professor_id}
+
+  - name: mart_department_stats
+    columns:
+      - name: department
+        data_tests: [unique, not_null]
+
+  - name: mart_professor_term_trends
+    data_tests:
+      - unique_combination:
+          arguments: {columns: [professor_id, review_quarter]}

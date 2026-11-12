@@ -7,3 +7,9 @@ data/reviews.csv
 frontend/node_modules/
 frontend/build/
 .venv/
+data/raw/
+*.duckdb
+*.duckdb.wal
+transform/target/
+transform/logs/
+transform/dbt_packages/
