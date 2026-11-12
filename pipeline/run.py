@@ -35,6 +35,11 @@ def publish():
     con.execute(f"attach '{WAREHOUSE_PATH}' as wh (read_only)")
     for t in SERVING_TABLES:
         con.execute(f"create table {t} as select * from wh.main.{t}")
+    # Facts for the site's "Data updated <date> · <n> reviews" line.
+    con.execute("""create table serving_meta as select
+        now() as built_at,
+        (select count(*) from wh.main.fct_review) as reviews,
+        (select count(*) from wh.main.dim_professor) as professors""")
     con.close()
     shutil.move(tmp, SERVING_PATH)  # atomic swap: the API never sees a half-written file
 
