@@ -5,4 +5,5 @@ groq==1.1.1
 pinecone==8.1.0
 python-dotenv==1.2.2
 duckdb==2.0.0
+pytz==2026.6  # duckdb needs it to return timestamps with time zones
 boto3==1.44.1
