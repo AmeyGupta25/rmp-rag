@@ -31,10 +31,10 @@ order by k, hash(review_id)
 limit ?
 """
 
-PROMPT = """Write ONE question that a UCSD student might type into a professor-review chatbot,
-which this specific review would answer. Mention the professor's name or the course naturally.
-Ask about something concrete the review covers (exams, workload, grading, lectures...).
-Do not quote the review. Output only the question.
+PROMPT = """Write ONE short question (under 15 words) the way a UCSD student would type it into a
+professor-review chatbot, which this specific review would answer. Use the professor's last name
+and the course code. Ask about one concrete topic the review covers (exams, workload, grading,
+attendance...) in casual words. Do not reuse the review's wording. Output only the question.
 
 Professor: {name} ({department})
 Course: {course_code}
