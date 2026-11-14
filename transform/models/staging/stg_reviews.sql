@@ -1,13 +1,13 @@
 -- Latest version of every review. A professor's reviews are re-fetched whenever their
 -- rating count changes, so the same review id can appear in several runs.
 with raw as (
-    select * from {{ raw_json('reviews', "{
+    select * from {{ raw_json('reviews', {
         'id': 'VARCHAR', 'professor_id': 'VARCHAR', 'date': 'VARCHAR', 'class': 'VARCHAR',
         'comment': 'VARCHAR', 'grade': 'VARCHAR', 'helpfulRating': 'INTEGER', 'clarityRating': 'INTEGER',
         'difficultyRating': 'INTEGER', 'wouldTakeAgain': 'INTEGER', 'attendanceMandatory': 'VARCHAR',
         'textbookUse': 'INTEGER', 'isForCredit': 'BOOLEAN', 'ratingTags': 'VARCHAR',
         'thumbsUpTotal': 'INTEGER', 'thumbsDownTotal': 'INTEGER', 'fetched_at': 'TIMESTAMPTZ'
-    }") }}
+    }) }}
 ),
 -- Each fetch pulls ALL of a professor's reviews, so the latest fetch is the complete,
 -- current set. Older fetches only matter for professors not re-fetched since.

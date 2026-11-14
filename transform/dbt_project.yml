@@ -4,6 +4,7 @@ profile: profai
 model-paths: ["models"]
 macro-paths: ["macros"]
 test-paths: ["tests"]
+seed-paths: ["seeds"]
 
 vars:
   raw_root: "{{ env_var('RAW_ROOT', 'data/raw') }}"
@@ -14,3 +15,8 @@ models:
       +materialized: view
     marts:
       +materialized: table
+
+seeds:
+  profai:
+    instructor_overrides:
+      +column_types: {schedule_instructor: varchar, professor_id: varchar}

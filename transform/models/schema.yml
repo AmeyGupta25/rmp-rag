@@ -51,3 +51,70 @@ models:
     data_tests:
       - unique_combination:
           arguments: {columns: [professor_id, review_quarter]}
+
+  - name: mart_professor_rating_history
+    data_tests:
+      - unique_combination:
+          arguments: {columns: [professor_id, valid_from]}
+    columns:
+      - name: professor_id
+        data_tests:
+          - relationships:
+              arguments: {to: ref('dim_professor'), field: professor_id}
+
+  - name: mart_course_professors
+    data_tests:
+      - unique_combination:
+          arguments: {columns: [course_code, professor_id]}
+
+  - name: mart_professor_attributes
+    columns:
+      - name: professor_id
+        data_tests: [unique, not_null]
+      - name: curve_pct
+        data_tests:
+          - in_range:
+              arguments: {min_value: 0, max_value: 100}
+
+  - name: mart_professor_review_stats
+    columns:
+      - name: professor_id
+        data_tests: [unique, not_null]
+      - name: graded_reviews
+        data_tests:
+          - in_range:
+              arguments: {min_value: 0, max_value: 100000}
+      - name: grade_a_pct
+        data_tests:
+          - in_range:
+              arguments: {min_value: 0, max_value: 1}
+
+  - name: mart_professor_summaries
+    columns:
+      - name: professor_id
+        data_tests: [unique, not_null]
+
+  - name: stg_review_attributes
+    columns:
+      - name: exam_style
+        data_tests:
+          - accepted_values:
+              arguments: {values: [multiple_choice, free_response, mixed, no_exams, unknown]}
+      - name: curve
+        data_tests:
+          - accepted_values:
+              arguments: {values: ["yes", "no", unknown]}
+      - name: workload
+        data_tests:
+          - accepted_values:
+              arguments: {values: [light, moderate, heavy, unknown]}
+
+  - name: int_instructor_match
+    data_tests:
+      - unique_combination:
+          arguments: {columns: [schedule_instructor, subject]}
+    columns:
+      - name: match_type
+        data_tests:
+          - accepted_values:
+              arguments: {values: [exact, name_only, ambiguous, override, no_rmp_profile]}

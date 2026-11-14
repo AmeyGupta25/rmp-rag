@@ -1,10 +1,10 @@
 -- One row per professor per pipeline run: the history that rating trends are built from.
 with raw as (
-    select * from {{ raw_json('professors', "{
+    select * from {{ raw_json('professors', {
         'id': 'VARCHAR', 'firstName': 'VARCHAR', 'lastName': 'VARCHAR', 'department': 'VARCHAR',
         'avgRating': 'DOUBLE', 'avgDifficulty': 'DOUBLE', 'numRatings': 'INTEGER',
         'wouldTakeAgainPercent': 'DOUBLE', 'fetched_at': 'TIMESTAMPTZ'
-    }") }}
+    }) }}
 )
 select distinct on (id, fetched_at)
     id                                         as professor_id,

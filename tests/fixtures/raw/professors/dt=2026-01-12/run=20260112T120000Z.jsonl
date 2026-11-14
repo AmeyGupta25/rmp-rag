@@ -1,0 +1,3 @@
+{"id": "T-ADA", "firstName": "Ada", "lastName": "Lovelace", "department": "Computer Science", "avgRating": 4.6, "avgDifficulty": 3.5, "numRatings": 4, "wouldTakeAgainPercent": 75.0, "fetched_at": "2026-01-12T12:00:00+00:00"}
+{"id": "T-ALAN", "firstName": "Alan", "lastName": "Turing", "department": "Mathematics", "avgRating": 3.0, "avgDifficulty": 4.0, "numRatings": 3, "wouldTakeAgainPercent": -1, "fetched_at": "2026-01-12T12:00:00+00:00"}
+{"id": "T-FEW", "firstName": "Grace", "lastName": "Hopper", "department": "Computer Science", "avgRating": 5.0, "avgDifficulty": 2.0, "numRatings": 1, "wouldTakeAgainPercent": 100.0, "fetched_at": "2026-01-12T12:00:00+00:00"}
