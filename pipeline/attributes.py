@@ -79,7 +79,14 @@ def run(max_batches=None):
                 break
             batch = todo[start:start + BATCH]
             text = "\n\n".join(f"[{i}] {c}" for i, (_, c, _) in enumerate(batch, 1))
-            reply, usage = llm.complete_json(client, MODEL, PROMPT.format(reviews=text), max_tokens=2500)
+            prompt = PROMPT.format(reviews=text)
+            try:
+                reply, usage = llm.complete_json(client, MODEL, prompt, max_tokens=2500)
+            except llm.BadJSON:  # one unparseable reply costs this batch, not the whole day
+                budget.spend_failed(prompt, 2500)
+                rejects += [{"reason": "attributes: model returned invalid JSON", "record": {"review_id": rid}}
+                            for rid, _, _ in batch]
+                continue
             budget.spend(usage)
             got, bad = parse(batch, reply)
             rows += [{**r, "model": MODEL, "extracted_at": now.isoformat()} for r in got]

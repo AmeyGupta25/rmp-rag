@@ -85,8 +85,13 @@ def run(max_professors=None):
             if budget.exhausted or (max_professors is not None and n >= max_professors):
                 break
             text = "\n\n".join(f"[{i}] {c}" for i, (_, c) in enumerate(p["reviews"], 1))
-            reply, usage = llm.complete_json(
-                client, MODEL, PROMPT.format(name=p["name"], department=p["department"], reviews=text), 1500)
+            prompt = PROMPT.format(name=p["name"], department=p["department"], reviews=text)
+            try:
+                reply, usage = llm.complete_json(client, MODEL, prompt, 1500)
+            except llm.BadJSON:  # one unparseable reply costs this professor, not the whole day
+                budget.spend_failed(prompt, 1500)
+                rejects.append({"reason": "summary: model returned invalid JSON", "record": {"professor_id": pid}})
+                continue
             budget.spend(usage)
             try:
                 s = Summary.model_validate(reply)
