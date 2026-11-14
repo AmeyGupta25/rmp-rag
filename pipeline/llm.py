@@ -21,9 +21,17 @@ class TokenBudget:
     def spend(self, usage):
         self.used += usage.total_tokens
 
+    def spend_failed(self, prompt, max_tokens):
+        """A failed call reports no usage: count its worst case, so repeated failures still hit the cap."""
+        self.used += len(prompt) // 4 + max_tokens
+
     @property
     def exhausted(self):
         return self.used >= self.cap
+
+
+class BadJSON(Exception):
+    """The model's reply wasn't valid JSON. Callers skip that item (as a reject) instead of failing the run."""
 
 
 def complete_json(client, model, prompt, max_tokens):
@@ -35,7 +43,11 @@ def complete_json(client, model, prompt, max_tokens):
                 max_tokens=max_tokens, reasoning_effort="low", response_format={"type": "json_object"},
             )
             return json.loads(resp.choices[0].message.content), resp.usage
+        except json.JSONDecodeError as e:
+            raise BadJSON(str(e)) from e
         except Exception as e:
+            if "json_validate_failed" in str(e):  # Groq's 400 when the model's JSON doesn't parse
+                raise BadJSON(str(e)) from e
             if "429" not in str(e) or attempt == 4:
                 raise
             time.sleep(20 * (attempt + 1))

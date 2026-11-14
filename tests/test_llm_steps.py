@@ -30,3 +30,42 @@ def test_an_extra_summary_point_is_trimmed_not_rejected():
     s = summaries.Summary.model_validate({"pros": ["a", "b", "c", "d"], "cons": ["x"], "exams": "Fair.",
                                           "workload": "Light.", "cited": list(range(1, 13))})
     assert s.pros == ["a", "b", "c"] and len(s.cited) == 10
+
+
+def test_invalid_json_from_the_model_rejects_that_item_and_the_run_continues(monkeypatch, tmp_path):
+    from unittest.mock import MagicMock
+
+    from pipeline import extract, llm
+
+    ok = MagicMock(total_tokens=100)
+    replies = iter([Exception("Error code: 400 - {'code': 'json_validate_failed'}"),
+                    ({"pros": ["Clear"], "cons": [], "exams": "Fair.", "workload": "Light.", "cited": [1]}, ok)])
+
+    def fake(*_args, **_kw):
+        r = next(replies)
+        if isinstance(r, Exception):
+            raise llm.BadJSON(str(r))
+        return r
+
+    monkeypatch.setattr(llm, "client", lambda: None)
+    monkeypatch.setattr(llm, "complete_json", fake)
+    monkeypatch.setattr(extract, "RAW_ROOT", tmp_path)
+    monkeypatch.setattr(summaries, "pending", lambda: [
+        ("P1", {"name": "A", "department": "X", "reviews": [("R1", "bad")]}),
+        ("P2", {"name": "B", "department": "X", "reviews": [("R2", "good")]})])
+    stats = summaries.run()
+    assert (stats["summarized"], stats["rejected"]) == (1, 1)
+    assert stats["tokens"] > 100  # the failed call still counts toward the daily cap
+
+
+def test_groq_json_validate_failed_becomes_bad_json():
+    from unittest.mock import MagicMock
+
+    import pytest
+
+    from pipeline import llm
+
+    client = MagicMock()
+    client.chat.completions.create.side_effect = Exception("Error code: 400 - {'code': 'json_validate_failed'}")
+    with pytest.raises(llm.BadJSON):
+        llm.complete_json(client, "m", "p", 10)
