@@ -1,0 +1,4 @@
+# Data pipeline (extract, transform, embed). Not needed by the API.
+-r requirements.txt
+requests==2.33.0
+dbt-duckdb==1.11.1

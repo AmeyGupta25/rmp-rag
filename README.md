@@ -11,34 +11,35 @@ An AI-powered chatbot for UCSD students to ask natural language questions about 
 ## Features
 
 - Ask natural language questions about any UCSD professor
-- Answers grounded in 7,565 real student reviews from Rate My Professor
+- Answers grounded in 21,649 real student reviews from Rate My Professor, with citations
 - Conversation memory (the AI remembers context across your session)
 - Filter questions by department
-- Browse and search through 500 professors with ratings, difficulty, and review counts
+- Search 500 professors and every reviewed class, with filters for rating, difficulty, grades and class style
+- Compare up to three professors side by side
 - Professor rating cards shown inline when the AI mentions a professor
 
 ## Tech Stack
 
 | Layer | Technology |
 |---|---|
-| Scraping | Python, RMP GraphQL API |
+| Pipeline | Python, RMP GraphQL API, S3, dbt + DuckDB, GitHub Actions (weekly) |
 | Vector DB | Pinecone (multilingual-e5-large, 1024 dims) |
-| LLM | Groq (llama-3.3-70b-versatile) |
+| LLM | Groq (openai/gpt-oss-120b) |
 | Backend | FastAPI |
-| Frontend | React |
+| Frontend | React (Vite) |
 | Hosting | Render (API), Vercel (frontend) |
 
 ## How It Works
 
-1. **Scrape** -> 7,565 reviews from 500 UCSD professors are scraped from Rate My Professor
+1. **Scrape** -> every week, new reviews of 500 UCSD professors are pulled from Rate My Professor and modeled with dbt
 2. **Embed** -> reviews are embedded using Pinecone's multilingual-e5-large model and stored in a Pinecone vector index
 3. **Retrieve** -> when a user asks a question, the most relevant reviews are retrieved via semantic search
-4. **Generate** -> Groq's LLaMA 3.3 70B model generates a grounded answer using the retrieved reviews as context
+4. **Generate** -> Groq's gpt-oss-120b model generates a grounded answer using the retrieved reviews as context
 
 ## Local Setup
 
 ### Prerequisites
-- Python 3.10+
+- Python 3.12
 - Node.js
 - A Pinecone account and index named `rmp-rag` (1024 dims, cosine metric)
 - A Groq API key
@@ -48,7 +49,7 @@ An AI-powered chatbot for UCSD students to ask natural language questions about 
 cd rmp-rag
 python -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 ```
 
 Create a `.env` file in the root:
@@ -56,6 +57,11 @@ Create a `.env` file in the root:
 GROQ_API_KEY=your_groq_api_key
 PINECONE_API_KEY=your_pinecone_api_key
 PINECONE_INDEX=rmp-rag
+```
+
+Build the data the API reads (`data/serving.duckdb`; the first run scrapes every professor and takes a while):
+```bash
+python -m pipeline.run --skip-embed
 ```
 
 Start the API:
@@ -67,7 +73,7 @@ uvicorn api.main:app --reload
 ```bash
 cd frontend
 npm install
-npm start
+npm run dev
 ```
 
 Create a `.env` file in `frontend/`:
@@ -79,7 +85,11 @@ REACT_APP_API_URL=http://localhost:8000
 ```
 rmp-rag/
 ├── api/          # FastAPI backend
-├── data/         # Scraped professor data (professors.csv)
-├── frontend/     # React frontend
-└── scraper/      # RMP scraping scripts
+├── data/         # Local warehouse and serving data (not in git), Pinecone client
+├── eval/         # Retrieval and answer evaluation
+├── frontend/     # React (Vite) frontend
+├── infra/        # AWS setup (S3, IAM)
+├── pipeline/     # Extract, embed, LLM backfill, publish
+├── tests/        # pytest suite and synthetic fixtures
+└── transform/    # dbt models and data tests
 ```

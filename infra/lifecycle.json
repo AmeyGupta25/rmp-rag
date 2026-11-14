@@ -1,0 +1,16 @@
+{
+  "Rules": [
+    {
+      "ID": "expire-rejects",
+      "Filter": { "Prefix": "raw/rejects/" },
+      "Status": "Enabled",
+      "Expiration": { "Days": 30 }
+    },
+    {
+      "ID": "keep-5-previous-versions",
+      "Filter": {},
+      "Status": "Enabled",
+      "NoncurrentVersionExpiration": { "NoncurrentDays": 30, "NewerNoncurrentVersions": 5 }
+    }
+  ]
+}
