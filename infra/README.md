@@ -13,7 +13,8 @@ locally (write-audit), and uploads `serving.duckdb` only when every dbt test pas
 
 Access follows least privilege:
 
-- **GitHub Actions** assumes `profai-pipeline` through OIDC, so no long-lived AWS keys exist in GitHub. Only workflows on `main` of this repo can assume it ([github-oidc-trust.json](github-oidc-trust.json), [pipeline-policy.json](pipeline-policy.json)).
+- **GitHub Actions** uses the IAM user `profai-github`, which can only read and write `raw/*` and `serving/*` in this bucket ([pipeline-policy.json](pipeline-policy.json)). Its key lives only in the GitHub `production` environment, which only `main` can deploy to.
+  - Trade-off: AWS's simplified "projects" accounts block OIDC providers unless *advanced features* are activated, which is irreversible and removes the account's hard spend limit. The account keeps the spend limit, so the pipeline uses one scoped key instead. Keyless OIDC is ready in [github-oidc-trust.json](github-oidc-trust.json): after activation, create the provider and role (commented out below) and swap the two key lines in the workflows for `role-to-assume`.
 - **The API** uses an IAM user that can only read `serving/*` ([api-readonly-policy.json](api-readonly-policy.json)).
 
 ## Setup (one time)
@@ -22,17 +23,22 @@ Replace `<ACCOUNT_ID>` and `<BUCKET>` in the JSON files, then:
 
 ```bash
 BUCKET=<BUCKET>
-aws s3api create-bucket --bucket $BUCKET --region us-east-1
+REGION=us-east-2   # the account's Region; outside us-east-1, S3 needs the LocationConstraint
+aws s3api create-bucket --bucket $BUCKET --region $REGION --create-bucket-configuration LocationConstraint=$REGION
 aws s3api put-public-access-block --bucket $BUCKET \
   --public-access-block-configuration BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true
 aws s3api put-bucket-versioning --bucket $BUCKET --versioning-configuration Status=Enabled
 aws s3api put-bucket-lifecycle-configuration --bucket $BUCKET --lifecycle-configuration file://infra/lifecycle.json
 
-# GitHub OIDC provider + pipeline role
-aws iam create-open-id-connect-provider --url https://token.actions.githubusercontent.com \
-  --client-id-list sts.amazonaws.com
-aws iam create-role --role-name profai-pipeline --assume-role-policy-document file://infra/github-oidc-trust.json
-aws iam put-role-policy --role-name profai-pipeline --policy-name pipeline-s3 --policy-document file://infra/pipeline-policy.json
+# Pipeline user (key goes into the GitHub production environment as AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY)
+aws iam create-user --user-name profai-github
+aws iam put-user-policy --user-name profai-github --policy-name pipeline-s3 --policy-document file://infra/pipeline-policy.json
+aws iam create-access-key --user-name profai-github
+
+# Keyless alternative (needs advanced features on simplified accounts):
+# aws iam create-open-id-connect-provider --url https://token.actions.githubusercontent.com --client-id-list sts.amazonaws.com
+# aws iam create-role --role-name profai-pipeline --assume-role-policy-document file://infra/github-oidc-trust.json
+# aws iam put-role-policy --role-name profai-pipeline --policy-name pipeline-s3 --policy-document file://infra/pipeline-policy.json
 
 # Read-only API user
 aws iam create-user --user-name profai-api

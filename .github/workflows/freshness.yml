@@ -6,7 +6,6 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write
   contents: read
   actions: write   # keepalive: each scheduled workflow re-enables the other
 
@@ -17,8 +16,10 @@ jobs:
     steps:
       - uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: us-east-1
+          # shortcut: a scoped key (bucket raw/ + serving/ only); the account blocks OIDC without advanced features, see infra/README.md
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
       # Checks the PUBLISHED data, not the raw files: raw is pushed even when a run fails,
       # so only serving.duckdb's age says whether the site is current. Fails (and GitHub
       # emails the owner) when it is over 8 days old or can't be read at all.
@@ -41,3 +42,4 @@ jobs:
         run: |
           gh api -X PUT "repos/${{ github.repository }}/actions/workflows/pipeline.yml/enable"
           gh api -X PUT "repos/${{ github.repository }}/actions/workflows/freshness.yml/enable"
+          gh api -X PUT "repos/${{ github.repository }}/actions/workflows/backfill.yml/enable"
