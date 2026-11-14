@@ -54,6 +54,7 @@ _db.execute("""create table serving_meta as
     select timestamp '2026-11-09 09:00' as built_at, 21649 as reviews, 500 as professors""")
 _db.close()
 os.environ["SERVING_PATH"] = SERVING
+os.environ.setdefault("GROQ_API_KEY", "test-key")  # CI has no key; the client is replaced with a mock below
 
 # Stub the vector store so importing the API doesn't connect to Pinecone.
 fake_vs = types.ModuleType("data.vectorstore")
