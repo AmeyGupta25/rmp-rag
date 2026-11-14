@@ -1,0 +1,32 @@
+from pipeline import attributes, summaries
+
+BATCH = [("R1", "Curved exams, heavy load.", "h1"), ("R2", "Fine.", "h2"), ("R3", "Easy.", "h3")]
+
+
+def test_numbered_results_map_back_to_the_right_reviews_and_bad_ones_are_rejected():
+    reply = {"results": [
+        {"i": 2, "exam_style": "unknown", "curve": "unknown", "workload": "light"},
+        {"i": 1, "exam_style": "mixed", "curve": "yes", "workload": "heavy"},
+        {"i": 3, "exam_style": "essay", "curve": "no", "workload": "light"},  # not an allowed value
+    ]}
+    rows, rejects = attributes.parse(BATCH, reply)
+    got = [(r["review_id"], r["curve"], r["comment_hash"]) for r in rows]
+    assert got == [("R1", "yes", "h1"), ("R2", "unknown", "h2")]
+    assert rejects[0]["record"] == {"review_id": "R3"}
+
+
+def test_a_missing_result_is_rejected_not_guessed():
+    rows, rejects = attributes.parse(BATCH[:1], {"results": []})
+    assert rows == [] and len(rejects) == 1
+
+
+def test_summary_hash_changes_only_when_the_review_set_changes():
+    a = [("R1", "good"), ("R2", "bad")]
+    assert summaries.reviews_hash(a) == summaries.reviews_hash(list(a))
+    assert summaries.reviews_hash(a) != summaries.reviews_hash([("R1", "good"), ("R2", "edited")])
+
+
+def test_an_extra_summary_point_is_trimmed_not_rejected():
+    s = summaries.Summary.model_validate({"pros": ["a", "b", "c", "d"], "cons": ["x"], "exams": "Fair.",
+                                          "workload": "Light.", "cited": list(range(1, 13))})
+    assert s.pros == ["a", "b", "c"] and len(s.cited) == 10

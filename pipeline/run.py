@@ -20,7 +20,12 @@ from pipeline import embed, extract
 WAREHOUSE_PATH = os.getenv("WAREHOUSE_PATH", "data/warehouse.duckdb")
 SERVING_PATH = os.getenv("SERVING_PATH", "data/serving.duckdb")
 # Tables the API may read. fct_review is excluded on purpose: it holds raw review text.
-SERVING_TABLES = ["dim_professor", "mart_department_stats", "mart_professor_term_trends"]
+SERVING_TABLES = [
+    "dim_professor", "mart_department_stats", "mart_professor_term_trends",
+    "mart_professor_rating_history", "mart_course_professors",
+    "mart_professor_attributes", "mart_professor_summaries", "mart_course_offerings",
+    "mart_professor_review_stats",
+]
 
 
 def dbt(*args):
@@ -37,7 +42,7 @@ def publish():
         con.execute(f"create table {t} as select * from wh.main.{t}")
     # Facts for the site's "Data updated <date> · <n> reviews" line.
     con.execute("""create table serving_meta as select
-        now() as built_at,
+        (select max(last_seen_at) from wh.main.dim_professor) as built_at,  -- last scrape, not this rebuild
         (select count(*) from wh.main.fct_review) as reviews,
         (select count(*) from wh.main.dim_professor) as professors""")
     con.close()
