@@ -7,6 +7,7 @@
   --muted: #5b5d66;
   --line: #e6e7eb;
   --frame: #c9ccd3;
+  --control: #8a8d96;  /* borders of things you type in or tap: 3.3:1 on white, past WCAG's 3:1 for controls */
   --gold: #d9a520;
   --violet: #5b3fd6;
   --violet-ink: #4a31b8;
@@ -35,6 +36,7 @@ body {
 }
 ::selection { background: var(--violet-tint); color: var(--ink); }
 :focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; border-radius: 6px; }
+#main:focus { outline: none; }  /* focus lands here on each page change to move screen readers along; it's a page, not a control */
 a { color: var(--violet-ink); text-underline-offset: 3px; }
 h1, h2, h3 { font-family: var(--display); line-height: 1.15; letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
 h1 { font-size: 30px; font-weight: 700; }
@@ -64,7 +66,7 @@ p { margin: 0; }
 /* ---------- controls ---------- */
 .ask-row { display: flex; gap: 10px; align-items: stretch; }
 .input, .select {
-  font: inherit; color: var(--ink); background: #fff; border: 1.5px solid var(--frame);
+  font: inherit; color: var(--ink); background: #fff; border: 1.5px solid var(--control);
   border-radius: 12px; padding: 12px 14px; min-height: 48px;
 }
 .input { flex: 1; min-width: 0; }
@@ -82,7 +84,7 @@ p { margin: 0; }
 a.btn { text-decoration: none; }
 .btn.ghost:hover { background: var(--violet-tint); }
 .btn.small { min-height: 36px; padding: 0 12px; font-size: 14px; border-radius: 10px; }
-.chip-toggle { font: 550 14px var(--ui); padding: 7px 12px; border-radius: 999px; border: 1.5px solid var(--frame); background: #fff; color: var(--ink); cursor: pointer; }
+.chip-toggle { font: 550 14px var(--ui); padding: 7px 12px; border-radius: 999px; border: 1.5px solid var(--control); background: #fff; color: var(--ink); cursor: pointer; }
 .chip-toggle { display: inline-flex; align-items: center; gap: 6px; transition: background 0.15s ease-out, border-color 0.15s ease-out; }
 .chip-toggle:hover:not(:disabled) { border-color: var(--violet); }
 .chip-toggle[aria-pressed="true"] { border-color: var(--violet); background: var(--violet-tint); color: var(--violet-ink); }
@@ -135,8 +137,9 @@ a.card-name:hover { text-decoration: underline; }
 .score { display: flex; align-items: baseline; gap: 6px; }
 .score .num { font-size: 52px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; }
 .score .of { font-size: 14px; color: var(--muted); }
-.stats { display: flex; flex-direction: column; gap: 8px; }
-.stat { display: grid; grid-template-columns: 112px 1fr 44px; align-items: center; gap: 10px; font-size: 13px; }
+/* one grid for every row (subgrid), so labels size to the longest one and the bars still line up, even in a narrow card */
+.stats { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px 10px; }
+.stat { display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; align-items: center; font-size: 13px; }
 .stat .label { color: var(--muted); }
 .stat .val { text-align: right; font: 600 14px var(--display); font-variant-numeric: tabular-nums; }
 .bar { height: 6px; border-radius: 999px; background: var(--track); overflow: hidden; }
@@ -144,7 +147,7 @@ a.card-name:hover { text-decoration: underline; }
 .bar.green > span { background: var(--green); }
 .bar.gray > span { background: var(--diff); }
 .verdict { font-size: 14px; border-top: 1px dashed var(--line); padding-top: 10px; }
-.card-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: auto; font-size: 13px; color: var(--muted); }  /* pinned to the card's bottom */
+.card-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-top: auto; font-size: 13px; color: var(--muted); }  /* pinned to the card's bottom */
 
 /* ---------- the hand (Ask) ---------- */
 .hand { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin: 28px 0 8px; }
@@ -157,7 +160,7 @@ a.card-name:hover { text-decoration: underline; }
   .hand.dealt .bar > span { transform-origin: left; animation: fill 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards; }
   .hand.dealt > .slot:nth-child(2) .bar > span { animation-delay: 0.27s; }
   .hand.dealt > .slot:nth-child(3) .bar > span { animation-delay: 0.34s; }
-  .pop { display: inline-block; animation: pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .pop { display: inline-block; animation: pop 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
   .inline-quote { animation: fade 0.25s ease-out; }
   .dd-panel { animation: drop 0.16s ease-out; }
   .deck.busy { opacity: 0.6; transition: opacity 0.2s ease-out 0.15s; }
@@ -220,6 +223,7 @@ a.card-name:hover { text-decoration: underline; }
 .cmp-verdict { display: flex; flex-wrap: wrap; gap: 6px 20px; list-style: none; margin: 8px 0 6px; padding: 0; color: var(--muted); }
 .cmp-how { font-size: 13px; color: var(--muted); max-width: 72ch; margin-bottom: 20px; }
 .cmp-verdict b { color: var(--ink); font-weight: 650; }
+.cmp-for { color: var(--muted); font-weight: 500; }
 .cmp-skeleton { height: 420px; margin-top: 20px; }
 .cmp { --label: 190px; --col: 220px; width: 100%; min-width: calc(var(--label) + var(--n) * var(--col)); border-collapse: separate; border-spacing: 0; table-layout: fixed; font-size: 14px; }
 .cmp th[scope="row"], .cmp-corner { width: var(--label); }
@@ -293,7 +297,7 @@ a.card-name:hover { text-decoration: underline; }
 /* filter bar: each category is a dropdown; panels hang under their button (under the whole bar on phones) */
 .fbar { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--line); }
 .dd { position: relative; }
-.dd-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px 0 14px; border-radius: 999px; border: 1.5px solid var(--frame); background: #fff; color: var(--ink); font: 550 14px var(--ui); cursor: pointer; white-space: nowrap; transition: border-color 0.15s ease-out, background 0.15s ease-out; }
+.dd-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px 0 14px; border-radius: 999px; border: 1.5px solid var(--control); background: #fff; color: var(--ink); font: 550 14px var(--ui); cursor: pointer; white-space: nowrap; transition: border-color 0.15s ease-out, background 0.15s ease-out; }
 .dd-btn:hover { border-color: var(--violet); }
 .dd-btn.on { border-color: var(--violet); background: var(--violet-tint); color: var(--violet-ink); }
 .dd-btn svg { color: var(--muted); transition: rotate 0.2s ease-out; }
@@ -324,7 +328,7 @@ a.card-name:hover { text-decoration: underline; }
 .dd-panel:has(.histo) { width: 340px; }
 .histo { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; height: 64px; align-items: end; margin: 0 10px; }
 .histo-bar { height: 100%; display: flex; align-items: flex-end; padding: 0; border: 0; background: none; cursor: pointer; border-radius: 4px 4px 0 0; }
-.histo-bar span { width: 100%; border-radius: 4px 4px 0 0; background: var(--frame); transition: background 0.15s ease-out, height 0.25s ease-out; }
+.histo-bar span { width: 100%; border-radius: 4px 4px 0 0; background: var(--diff); transition: background 0.15s ease-out, height 0.25s ease-out; }
 .histo-bar.in span { background: var(--violet); }
 .histo-bar:hover span { background: var(--violet-ink); }
 .range { position: relative; height: 28px; margin-top: -6px; }
@@ -341,7 +345,7 @@ a.card-name:hover { text-decoration: underline; }
 .sort-help { flex-basis: 100%; font-size: 13px; color: var(--muted); margin-top: -4px; }
 
 /* grades, tags, save */
-.bar.violet > span { background: var(--violet); }
+.bar.ink > span { background: var(--ink); }
 .head-actions { display: flex; align-items: center; gap: 6px; }
 .save-btn { display: inline-grid; place-items: center; width: 36px; height: 36px; margin: -6px -6px 0 0; border-radius: 10px; border: 0; background: none; color: var(--muted); cursor: pointer; transition: color 0.15s ease-out, background 0.15s ease-out; }
 .save-btn:hover { background: var(--violet-tint); color: var(--violet-ink); }
@@ -366,7 +370,8 @@ a.card-name:hover { text-decoration: underline; }
 .list-actions .muted { display: inline-flex; align-items: center; gap: 6px; }
 .copied { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; max-width: 40ch; }
 
-/* ---------- compare bar ---------- */
+/* ---------- compare bar: phones only, where the rail scrolls away ---------- */
+.cmp-bar { display: none; }
 
 /* ---------- mid widths: small laptops, split screens, tablets in landscape ---------- */
 @media (max-width: 1200px) and (min-width: 901px) {
@@ -400,10 +405,23 @@ a.card-name:hover { text-decoration: underline; }
   .dd-panel { left: 0; right: 0; top: 100%; width: auto; max-width: none; margin-top: -8px; }
   .sort { order: 3; width: 100%; overflow-x: auto; scrollbar-width: none; }
   .chip-toggle { min-height: 40px; white-space: nowrap; }
-  /* Compare: two professors fit side by side, and the table scrolls in its own box so their heads stay pinned on top */
-  .cmp { --label: 96px; --col: 132px; font-size: 13px; }
+  /* thumb-sized targets on touch screens */
+  .btn.small { min-height: 44px; }
+  .save-btn { width: 44px; height: 44px; margin: -10px -10px 0 0; }
+  .cmp-bar {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px; position: sticky; z-index: 5;
+    bottom: max(12px, env(safe-area-inset-bottom)); margin: 0 16px; min-height: 52px; padding: 0 16px; border-radius: 14px;
+    background: var(--violet); color: #fff; font: 600 15px var(--ui); text-decoration: none; box-shadow: 0 10px 28px -10px rgb(31 32 36 / 45%);
+  }
+  .cmp-bar:hover { background: var(--violet-ink); }
+  .cmp-bar:focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; }
+  .cmp-bar-go { display: inline-flex; align-items: center; gap: 6px; }
+  /* Compare: two professors fit side by side (84 + 2 x 124 = 332px, inside a 375px phone's 343px) and scroll with the
+     page; three need sideways scrolling, so only then does the table get its own box with heads pinned on top */
+  .cmp { --label: 84px; --col: 124px; font-size: 13px; }
   .cmp tbody th, .cmp tbody td { padding: 9px 6px; }
-  .cmp-scroll { max-height: calc(100dvh - 96px); overflow: auto; overscroll-behavior: contain; }
+  .cmp-scroll { max-height: calc(100dvh - 96px); overflow: auto; }
+  .cmp-scroll.n-2 { max-height: none; overflow: visible; }
   .cmp thead th, .cmp-corner { position: sticky; top: 0; z-index: 2; background: var(--page); padding: 0 3px 8px; }
   .cmp-corner { left: 0; z-index: 3; }
   .cmp-prof { padding: 8px 9px; }

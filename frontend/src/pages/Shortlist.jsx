@@ -9,7 +9,8 @@ import { SHORTLIST_MAX, useShortlist } from "../shortlist.jsx";
 export function Shortlist() {
   const { ids: mine, add, account } = useShortlist();
   const [params] = useSearchParams();
-  const shared = params.get("ids")?.split(",").filter(Boolean).slice(0, SHORTLIST_MAX) || null;
+  const sharedIds = params.get("ids")?.split(",").filter(Boolean).slice(0, SHORTLIST_MAX);
+  const shared = sharedIds?.length ? sharedIds : null;  // "?ids=" with nothing in it is just your own list
   const ids = shared || mine;
   const [profs, setProfs] = useState({});
   const [copied, setCopied] = useState(null);
@@ -22,12 +23,19 @@ export function Shortlist() {
       ));
   }, [ids.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {  // the confirmation fades once read; a hand-copy link (no clipboard access) stays until used
+    if (copied !== "Link copied") return;
+    const t = setTimeout(() => setCopied(null), 4000);
+    return () => clearTimeout(t);
+  }, [copied]);
+
   const link = `${window.location.origin}/shortlist?ids=${mine.join(",")}`;
   async function share() {
     try { await navigator.clipboard.writeText(link); setCopied("Link copied"); }
     catch { setCopied(link); }  // no clipboard access: show the link to copy by hand
   }
   const missing = shared ? shared.filter((id) => !mine.includes(id)) : [];
+  const allGone = ids.length > 0 && ids.every((id) => id in profs && !profs[id]);
 
   return (
     <>
@@ -58,6 +66,11 @@ export function Shortlist() {
         <div className="empty">
           <p>Nothing saved yet.</p>
           <p>Tap the bookmark on any professor in <Link to="/search">Search</Link> or <Link to="/">Ask</Link> to keep them here.</p>
+        </div>
+      ) : allGone ? (
+        <div className="empty">
+          <p>{ids.length === 1 ? "This professor isn’t" : "None of these professors are"} in our data anymore.</p>
+          <p>Find others in <Link to="/search">Search</Link>.</p>
         </div>
       ) : (
         <div className="deck">

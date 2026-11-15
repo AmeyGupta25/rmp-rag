@@ -1,11 +1,11 @@
 // The grades students reported getting, as one stacked bar. Grades are ordered, so the bar is one
-// violet ramp, darkest for A; every segment is also named with its share in the legend (light shades
-// alone are too faint to read against white).
+// ink ramp, darkest for A (violet is kept for actions); every segment is also named with its share in the
+// legend (the light shades alone are too faint to read against white).
 const BANDS = [
-  ["a", "A", "#3d2a99"],
-  ["b", "B", "#5f47d1"],
-  ["c", "C", "#8f7be6"],
-  ["below", "Below C", "#bfb2f2"],
+  ["a", "A", "#1f2024"],
+  ["b", "B", "#4a4c55"],
+  ["c", "C", "#8a8d96"],
+  ["below", "Below C", "#c9ccd3"],
 ];
 export const MIN_GRADES = 5;  // fewer reports than this say little, so the breakdown is left out
 const totalOf = (grades) => (grades ? BANDS.reduce((n, [k]) => n + grades[k], 0) : 0);

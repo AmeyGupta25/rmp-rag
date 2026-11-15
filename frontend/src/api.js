@@ -33,14 +33,16 @@ export async function api(path, body, retry = !body) {  // only reads retry: a r
 // new places with a View Transition, but in a 50-card grid they crossed over each other, so it was removed.)
 export function useApi(path, { smooth = false } = {}) {
   const [state, setState] = useState({});
+  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     if (!path) return;
     let live = true;
     const apply = (next) => live && setState(next);
     api(path).then((data) => apply({ path, data }), (error) => apply({ path, error }));
     return () => { live = false; };
-  }, [path]);
+  }, [path, attempt]);
+  const retry = () => { setState({}); setAttempt((n) => n + 1); };
   if (!path) return {};
-  if (state.path === path) return state;
+  if (state.path === path) return { ...state, retry };
   return smooth && state.data ? { data: state.data, loading: true } : { loading: true };
 }

@@ -1,10 +1,11 @@
 import { ArrowLeft, Check, Plus, Star, X } from "lucide-react";
 import { Fragment, useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../api.js";
 import { useCompare } from "../compare.jsx";
+import { ErrorNotice } from "../components/ErrorNotice.jsx";
 import { Grades, MIN_GRADES, hasGrades } from "../components/Grades.jsx";
-import { one, pct } from "../components/ProfCard.jsx";
+import { one, pct, spaced } from "../components/ProfCard.jsx";
 import { rowWinner, verdict } from "../compare-rules.js";
 
 // better (see compare-rules.js): +1 higher wins, -1 lower wins, 0 never judged. Only rows where "better" isn't a
@@ -25,6 +26,16 @@ const GROUPS = [
   ]],
 ];
 
+// From a class page the student is choosing for that class, so its own numbers are the ones judged; the overall
+// ones stay as context, never judged, since a professor can be great overall and weak in this course.
+const courseGroup = (code) => [`In ${spaced(code)}`, [
+  ["Quality in this class", "course_quality", one, 1, `Best in ${spaced(code)}`],
+  ["Difficulty in this class (lower is easier)", "course_difficulty", one, -1, `Easiest in ${spaced(code)}`],
+  ["Reviews of this class", "course_reviews", (v) => v ?? "—", 0],
+]];
+const asContext = ([name, rows]) => [name === "Ratings" ? "All courses" : name, rows.map(([l, k, f]) => [l, k, f, 0])];
+const lowerFirst = (t) => t.charAt(0).toLowerCase() + t.slice(1);
+
 function Said({ items, all }) {
   if (!items?.length) return <span className="muted">—</span>;
   return <ul>{(all ? items : items.slice(0, 2)).map((x) => <li key={x}>{x}</li>)}</ul>;
@@ -35,6 +46,8 @@ export function Compare() {
   const [profs, setProfs] = useState({});
   const [error, setError] = useState(null);
   const [allSaid, setAllSaid] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  const course = useSearchParams()[0].get("course")?.toUpperCase() || null;
   const navigate = useNavigate();
   const from = useLocation().state?.from;
   // Straight back to the search they came from (filters and scroll intact); from anywhere else, a fresh Search.
@@ -47,32 +60,42 @@ export function Compare() {
         (p) => setProfs((cur) => ({ ...cur, [id]: p })),
         (e) => (e.status === 404 ? toggle(id) : setError(e)),  // drop picks that no longer exist
       ));
-  }, [ids]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [ids, attempt]); // eslint-disable-line react-hooks/exhaustive-deps
+  const retry = () => setAttempt((n) => n + 1);
+  const findMore = course ? `/search?tab=classes&course=${encodeURIComponent(course)}` : "/search";
 
   const head = (
     <div className="cmp-head">
-      <h1>Compare</h1>
+      <h1>Compare{course && <span className="cmp-for"> for {spaced(course)}</span>}</h1>
       <div className="list-actions">
-        {ids.length > 0 && ids.length < 3 && <Link className="btn ghost small" to="/search"><Plus size={16} aria-hidden="true" />Add a professor</Link>}
+        {ids.length > 0 && ids.length < 3 && <Link className="btn ghost small" to={findMore}><Plus size={16} aria-hidden="true" />Add a professor</Link>}
         <button type="button" className="btn ghost small" onClick={exit}><ArrowLeft size={16} aria-hidden="true" />Back to search</button>
       </div>
     </div>
   );
   if (ids.length < 2) {
-    return <>{head}<div className="empty"><p>Pick {ids.length ? "one more professor" : "two or three professors"} with the Compare button on any card to see them side by side.</p><Link to="/search">Find professors</Link></div></>;
+    return <>{head}<div className="empty"><p>Pick {ids.length ? "one more professor" : "two or three professors"} with the Compare button on any card to see them side by side.</p><Link to={findMore}>Find professors</Link></div></>;
   }
-  if (error) return <>{head}<div className="notice error" role="alert">{error.message}</div></>;
+  if (error) return <>{head}<ErrorNotice error={error} retry={retry} /></>;
 
-  const list = ids.map((id) => profs[id] && {
-    ...profs[id], a_or_better: profs[id].graded_reviews >= MIN_GRADES ? 100 * profs[id].grade_a_pct : null,
+  const list = ids.map((id) => {
+    const p = profs[id];
+    if (!p) return null;
+    const c = course && p.by_course?.find((r) => r.course_code === course);
+    return { ...p, a_or_better: p.graded_reviews >= MIN_GRADES ? 100 * p.grade_a_pct : null,
+             course_quality: c?.avg_quality ?? null, course_difficulty: c?.avg_difficulty ?? null, course_reviews: c?.reviews ?? null };
   });
   if (!list.every(Boolean)) return <>{head}<div className="skeleton cmp-skeleton" aria-hidden="true" /></>;
 
   // Rows nobody has data for say nothing, so they're left out (and so is a group left empty).
-  const groups = GROUPS.map(([name, rows]) => [name, rows.filter(([, key]) => list.some((p) => p[key] != null))]).filter(([, rows]) => rows.length);
-  // One winner per category, named in the verdict; the gold frame goes to whoever is best rated.
+  // Judge by the class only when someone actually has reviews for it; otherwise it's the usual overall compare.
+  const byCourse = course && list.some((p) => p.course_reviews != null);
+  const groups = (byCourse ? [courseGroup(course), ...GROUPS.map(asContext)] : GROUPS).map(([name, rows]) => [name, rows.filter(([, key]) => list.some((p) => p[key] != null))]).filter(([, rows]) => rows.length);
+  // One winner per category, named in the verdict; the gold frame goes to the clear best on quality.
   const wins = verdict(list, groups.flatMap(([, rows]) => rows));
-  const leader = list.indexOf(wins.find(([t]) => t === "Best rated")?.[1]);
+  const leadKey = byCourse ? "course_quality" : "avg_rating";
+  const top = rowWinner(list, leadKey, 1);
+  const leader = top == null ? -1 : list.findIndex((p) => p[leadKey] === top);
   const byProf = list.map((p) => [p, wins.filter(([, w]) => w === p).map(([t]) => t)]).filter(([, ts]) => ts.length);
   const summaries = list.some((p) => p.summary);
   const more = list.some((p) => p.summary?.pros?.length > 2 || p.summary?.cons?.length > 2);
@@ -83,11 +106,13 @@ export function Compare() {
       {head}
       {wins.length ? (
         <ul className="cmp-verdict" aria-label="Who wins what">
-          {byProf.map(([p, ts]) => <li key={p.professor_id}><b>{p.name}</b>: {ts.join(", ").toLowerCase().replace(/^./, (c) => c.toUpperCase())}</li>)}
+          {byProf.map(([p, ts]) => <li key={p.professor_id}><b>{p.name}</b>: {ts.map((t, i) => (i ? lowerFirst(t) : t)).join(", ")}</li>)}
         </ul>
       ) : <p className="cmp-verdict">Too close to call: nobody is clearly ahead on any measure.</p>}
-      <p className="cmp-how">How we count: a check marks the one clear best value for rating, difficulty, would take again and A- or better. Number of ratings, attendance, curve and workload are shown but never judged, since what’s better there depends on you.</p>
-      <div className="scroll-x cmp-scroll">
+      <p className="cmp-how">{byCourse
+        ? `How we count: a check marks the one clear best quality and difficulty in ${spaced(course)}. The overall numbers below are there for context and aren’t judged.`
+        : "How we count: a check marks the one clear best value for rating, difficulty, would take again and A- or better. Number of ratings, attendance, curve and workload are shown but never judged, since what’s better there depends on you."}</p>
+      <div className={`scroll-x cmp-scroll n-${list.length}`}>
         <table className="cmp" style={{ "--n": list.length }}>
           <thead>
             <tr>
@@ -100,8 +125,8 @@ export function Compare() {
                       <button type="button" className="icon-btn" aria-label={`Remove ${p.name} from compare`} onClick={() => toggle(p.professor_id)}><X size={16} aria-hidden="true" /></button>
                     </div>
                     <span className="card-dept">{p.department}</span>
-                    <span className="cmp-score"><span className="num">{one(p.avg_rating)}</span><span className="of">/ 5</span></span>
-                    {i === leader && <span className="badge"><Star size={12} fill="currentColor" aria-hidden="true" />Best rated</span>}
+                    <span className="cmp-score"><span className="num">{one(p[leadKey])}</span><span className="of">/ 5{byCourse && " here"}</span></span>
+                    {i === leader && <span className="badge"><Star size={12} fill="currentColor" aria-hidden="true" />Best pick</span>}
                   </div>
                 </th>
               ))}

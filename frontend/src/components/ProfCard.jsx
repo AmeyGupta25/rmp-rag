@@ -38,12 +38,13 @@ function SaveButton({ id, name }) {
 export function CompareButton({ id, name }) {
   const { ids, toggle } = useCompare();
   const on = ids.includes(id);
-  const full = !on && ids.length >= 3;
+  const full = !on && ids.length >= 3;  // adding a fourth swaps out the first pick (see compare.jsx)
   return (
-    <button type="button" className="btn ghost small" aria-pressed={on} disabled={full}
-      aria-label={full ? `Compare is full: remove a professor to add ${name}` : `${on ? "Remove" : "Add"} ${name} ${on ? "from" : "to"} compare`}
+    <button type="button" className="btn ghost small" aria-pressed={on}
+      aria-label={full ? `Swap ${name} into compare, in place of your first pick` : `${on ? "Remove" : "Add"} ${name} ${on ? "from" : "to"} compare`}
+      title={full ? "Compare holds three: this replaces your first pick" : undefined}
       onClick={() => toggle(id)}>
-      {on && <Check size={15} aria-hidden="true" />}{on ? "In compare" : full ? "Compare full" : "Compare"}
+      {on && <Check size={15} aria-hidden="true" />}{on ? "In compare" : full ? "Swap in" : "Compare"}
     </button>
   );
 }
@@ -157,9 +158,9 @@ export function ProfCard({ p, rank, best, badge = "Best pick", link = true, head
           </div>
           {few && <p className="few-note">Based on {p.num_ratings} rating{p.num_ratings === 1 ? "" : "s"}, so treat it as a hint.</p>}
           <div className="stats">
-            <Stat label="Difficulty" text={one(p.avg_difficulty)} fill={p.avg_difficulty == null ? null : p.avg_difficulty * 20} />
+            {p.avg_difficulty != null && <Stat label="Difficulty" text={one(p.avg_difficulty)} fill={p.avg_difficulty * 20} />}
             {p.would_take_again != null && <Stat label="Would take again" text={pct(p.would_take_again)} fill={p.would_take_again} tone="green" />}
-            {p.graded_reviews >= MIN_GRADES && <Stat label="A- or better" text={pct(100 * p.grade_a_pct)} fill={100 * p.grade_a_pct} tone="violet" />}
+            {p.graded_reviews >= MIN_GRADES && <Stat label="A- or better" text={pct(100 * p.grade_a_pct)} fill={100 * p.grade_a_pct} tone="ink" />}
             <Stat label="Ratings" text={p.num_ratings} />
           </div>
           <Tags tags={p.top_tags} />

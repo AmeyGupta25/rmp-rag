@@ -1,4 +1,4 @@
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useApi } from "../api.js";
 import { Grades, Tags, hasGrades } from "../components/Grades.jsx";
@@ -37,6 +37,7 @@ export function Professor() {
   const [allCourses, setAllCourses] = useState(false);
   const [allQuarters, setAllQuarters] = useState(false);
   const { data: p, error, loading } = useApi(`/professors/${encodeURIComponent(id)}`);
+  useEffect(() => { if (p?.name) document.title = `${p.name} · UCSD ProfAI`; }, [p?.name]);
   if (loading) return <div className="detail"><LoadingCard /></div>;
   if (error) return <div className="empty"><p>{error.status === 404 ? "We don’t have this professor." : error.message}</p><Link to="/search">Search professors</Link></div>;
 
