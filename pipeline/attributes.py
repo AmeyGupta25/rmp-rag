@@ -7,6 +7,7 @@ stops at the daily token cap and resumes on the next run.
 
 import hashlib
 import json
+import os
 from datetime import UTC, datetime
 from typing import Literal
 
@@ -18,7 +19,7 @@ from pipeline import extract, llm
 MODEL = "openai/gpt-oss-20b"
 BATCH = 20
 SINCE_YEAR = 2020
-WAREHOUSE_PATH = "data/warehouse.duckdb"
+WAREHOUSE_PATH = os.getenv("WAREHOUSE_PATH", "data/warehouse.duckdb")
 
 
 class Attributes(BaseModel):
@@ -42,8 +43,10 @@ def comment_hash(comment):
 
 
 def done_hashes():
-    return {json.loads(line)["comment_hash"]
-            for f in extract.RAW_ROOT.glob("review_attributes/*/*.jsonl") for line in open(f)}
+    """(review_id, comment_hash) pairs already extracted. Keyed by both, so two reviews with the same text
+    each get their own row (the mart joins on both)."""
+    return {(r["review_id"], r["comment_hash"])
+            for f in extract.RAW_ROOT.glob("review_attributes/*/*.jsonl") for r in map(json.loads, open(f))}
 
 
 def pending(warehouse=WAREHOUSE_PATH):
@@ -53,7 +56,7 @@ def pending(warehouse=WAREHOUSE_PATH):
         where r.comment is not null and year(r.reviewed_at) >= ?
         order by p.num_ratings desc, r.review_id""", [SINCE_YEAR]).fetchall()
     done = done_hashes()
-    return [(rid, c, h) for rid, c in rows if (h := comment_hash(c)) not in done]
+    return [(rid, c, h) for rid, c in rows if (rid, h := comment_hash(c)) not in done]
 
 
 def parse(batch, reply):
