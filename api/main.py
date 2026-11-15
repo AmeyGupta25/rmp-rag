@@ -22,7 +22,7 @@ SERVING_PATH = os.getenv("SERVING_PATH", "data/serving.duckdb")
 # In production the pipeline publishes to S3; the API pulls it at startup. The weekly
 # pipeline redeploys the API after publishing, so a restart is how new data arrives.
 SERVING_S3_URI = os.getenv("SERVING_S3_URI")  # e.g. s3://<bucket>/serving/serving.duckdb
-ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "https://rmp-rag-ten.vercel.app,http://localhost:3000").split(",")
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "https://profai.ameygupta.com,https://rmp-rag-ten.vercel.app,http://localhost:3000").split(",")
 
 
 def load_serving():
