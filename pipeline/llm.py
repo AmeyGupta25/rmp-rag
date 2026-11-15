@@ -30,6 +30,10 @@ class TokenBudget:
         return self.used >= self.cap
 
 
+class DailyLimit(Exception):
+    """The provider's per-day quota is used up. Callers stop and keep what finished; the next run resumes."""
+
+
 class BadJSON(Exception):
     """The model's reply wasn't valid JSON. Callers skip that item (as a reject) instead of failing the run."""
 
@@ -48,6 +52,8 @@ def complete_json(client, model, prompt, max_tokens):
         except Exception as e:
             if "json_validate_failed" in str(e):  # Groq's 400 when the model's JSON doesn't parse
                 raise BadJSON(str(e)) from e
+            if "per day" in str(e):  # Groq's 429 for the daily quota: retrying within minutes can't help
+                raise DailyLimit(str(e)) from e
             if "429" not in str(e) or attempt == 4:
                 raise
             time.sleep(20 * (attempt + 1))

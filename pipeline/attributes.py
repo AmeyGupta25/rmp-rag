@@ -82,6 +82,9 @@ def run(max_batches=None):
             prompt = PROMPT.format(reviews=text)
             try:
                 reply, usage = llm.complete_json(client, MODEL, prompt, max_tokens=2500)
+            except llm.DailyLimit:  # quota spent (maybe by an earlier run today): stop, resume tomorrow
+                print("provider daily limit reached, stopping")
+                break
             except llm.BadJSON:  # one unparseable reply costs this batch, not the whole day
                 budget.spend_failed(prompt, 2500)
                 rejects += [{"reason": "attributes: model returned invalid JSON", "record": {"review_id": rid}}

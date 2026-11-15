@@ -88,6 +88,9 @@ def run(max_professors=None):
             prompt = PROMPT.format(name=p["name"], department=p["department"], reviews=text)
             try:
                 reply, usage = llm.complete_json(client, MODEL, prompt, 1500)
+            except llm.DailyLimit:  # quota spent (maybe by an earlier run today): stop, resume tomorrow
+                print("provider daily limit reached, stopping")
+                break
             except llm.BadJSON:  # one unparseable reply costs this professor, not the whole day
                 budget.spend_failed(prompt, 1500)
                 rejects.append({"reason": "summary: model returned invalid JSON", "record": {"professor_id": pid}})
