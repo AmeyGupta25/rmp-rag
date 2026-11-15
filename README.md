@@ -4,9 +4,9 @@ An AI-powered chatbot for UCSD students to ask natural language questions about 
 
 ## Live Demo
 
-- **Frontend:** https://rmp-rag-ten.vercel.app
-- **API:** https://rmp-rag-api.onrender.com
-- **API Docs:** https://rmp-rag-api.onrender.com/docs
+- **Frontend:** https://profai.ameygupta.com
+- **API:** https://api.profai.ameygupta.com
+- **API Docs:** https://api.profai.ameygupta.com/docs
 
 ## Features
 
