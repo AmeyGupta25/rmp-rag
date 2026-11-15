@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ProfAI labeling</title>
+<style>
+  :root { --ink:#1b1830; --muted:#5f5a78; --line:#e3e0ee; --bg:#faf9fd; --card:#fff; --accent:#5B3FD6; --on:#efebff; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink:#ece9f7; --muted:#a29dbb; --line:#2f2b45; --bg:#14121f; --card:#1c1a2b; --on:#2a2350; --accent:#9d8bff; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font:16px/1.5 system-ui, sans-serif; color:var(--ink); background:var(--bg); }
+  main { max-width:860px; margin:0 auto; padding:24px 16px 80px; }
+  nav { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+  nav button { flex:1; min-width:160px; text-align:left; }
+  nav button[aria-pressed="true"] { border-color:var(--accent); background:var(--on); }
+  nav small { display:block; color:var(--muted); }
+  button { font:inherit; color:inherit; background:var(--card); border:1px solid var(--line); border-radius:8px; padding:8px 14px; cursor:pointer; }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  button:focus-visible, input:focus-visible, textarea:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .bar { display:flex; align-items:center; gap:8px; margin:12px 0; flex-wrap:wrap; }
+  .bar .grow { flex:1; }
+  .muted { color:var(--muted); font-size:14px; }
+  textarea, input[type=text] { width:100%; font:inherit; color:inherit; background:var(--card); border:1px solid var(--line); border-radius:8px; padding:10px; }
+  textarea.sql { font:13px/1.5 ui-monospace, monospace; min-height:110px; }
+  .hit { display:flex; gap:12px; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px; margin:8px 0; cursor:pointer; }
+  .hit:has(input:checked) { border-color:var(--accent); background:var(--on); }
+  .hit input { margin-top:4px; width:18px; height:18px; accent-color:var(--accent); flex:none; }
+  .hit p { margin:4px 0 0; white-space:pre-wrap; }
+  .tag { font-size:12px; color:var(--muted); }
+  .tag b { color:var(--accent); }
+  table { border-collapse:collapse; width:100%; font-size:14px; background:var(--card); }
+  th, td { border-bottom:1px solid var(--line); padding:6px 8px; text-align:left; }
+  .review { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; white-space:pre-wrap; }
+  fieldset { border:1px solid var(--line); border-radius:10px; margin:12px 0; padding:8px 12px; }
+  legend { font-weight:600; padding:0 4px; }
+  fieldset label { display:inline-flex; align-items:center; gap:6px; margin:4px 14px 4px 0; cursor:pointer; }
+  .err { color:#c62828; }
+  .done { color:#2e7d32; font-weight:600; }
+</style>
+</head>
+<body>
+<main>
+  <nav id="tabs"></nav>
+  <div id="view"></div>
+</main>
+<script>
+const SETS = {
+  search: { title: "Search questions", key: "qid", help: "Is the question sensible? Tick every review that actually answers it." },
+  ranking: { title: "Ranking answers", key: "qid", help: "Do the rows answer the question correctly? Fix the SQL if not." },
+  attributes: { title: "Review labels", key: "review_id", help: "Pick what the review says. Use unknown when it doesn't say." },
+};
+let state, tab = "search", pos = {};
+
+function h(tag, props = {}, ...kids) {
+  const el = Object.assign(document.createElement(tag), props);
+  for (const k of kids.flat()) if (k != null) el.append(k);
+  return el;
+}
+const api = (path, body) => fetch(path, body ? { method: "POST", body: JSON.stringify(body) } : {}).then(r => r.json());
+
+async function persist(item) {
+  await api("/api/save", { set: tab, item });
+  const list = state[tab], key = SETS[tab].key;
+  list[list.findIndex(i => i[key] === item[key])] = item;
+  const next = list.findIndex((i, n) => n > pos[tab] && !i.reviewed);
+  pos[tab] = next >= 0 ? next : Math.min(pos[tab] + 1, list.length - 1);
+  render();
+}
+
+function tabs() {
+  const nav = document.getElementById("tabs");
+  nav.replaceChildren(...Object.entries(SETS).map(([name, s]) => {
+    const done = state[name].filter(i => i.reviewed).length;
+    return h("button", { ariaPressed: String(name === tab), onclick: () => { tab = name; render(); } },
+      s.title, h("small", {}, `${done} of ${state[name].length} done`));
+  }));
+}
+
+function header(item) {
+  const list = state[tab], n = pos[tab];
+  const go = d => { pos[tab] = Math.max(0, Math.min(list.length - 1, n + d)); render(); };
+  return [
+    h("p", { className: "muted" }, SETS[tab].help),
+    h("div", { className: "bar" },
+      h("button", { onclick: () => go(-1), disabled: n === 0 }, "← Back"),
+      h("span", { className: "grow" }, `Item ${n + 1} of ${list.length} `,
+        item.reviewed ? h("span", { className: "done" }, item.dropped ? "· dropped" : "· done") : null),
+      h("button", { onclick: () => go(1), disabled: n === list.length - 1 }, "Skip →")),
+  ];
+}
+
+function searchView(item) {
+  const source = item.source || item.relevant[0];
+  const q = h("textarea", { rows: 2, value: item.question });
+  const hits = h("div", {}, h("p", { className: "muted" }, "Searching…"));
+  const save = h("button", { className: "primary" }, "Save & next");
+  let searched = item.question;
+  q.oninput = () => { save.disabled = q.value.trim() !== searched; save.textContent = save.disabled ? "Search again first" : "Save & next"; };
+
+  function hit(id, text, tag) {
+    const box = h("input", { type: "checkbox", value: id, checked: item.relevant.includes(id) });
+    return h("label", { className: "hit" }, box, h("div", {}, h("div", { className: "tag" }, tag), h("p", {}, text)));
+  }
+  async function load() {
+    searched = q.value.trim(); q.oninput();
+    hits.replaceChildren(h("p", { className: "muted" }, "Searching…"));
+    const [src, pool] = await Promise.all([api(`/api/review?id=${encodeURIComponent(source)}`),
+                                           api(`/api/search?q=${encodeURIComponent(searched)}`)]);
+    const rank = r => [r.dense && `search #${r.dense}`, r.rerank && `reranked #${r.rerank}`].filter(Boolean).join(" · ");
+    const srcHit = pool.find(r => r.id === source);
+    hits.replaceChildren(
+      hit(source, `${src.professor ?? ""} · ${src.course ?? ""}\n${src.text}`,
+          h("span", {}, h("b", {}, "Review the question was written from"), srcHit ? ` · ${rank(srcHit)}` : " · not in the results")),
+      ...pool.filter(r => r.id !== source).map(r => hit(r.id, r.text, rank(r))));
+  }
+  save.onclick = () => persist({ ...item, source, question: q.value.trim(), dropped: false, reviewed: true,
+    relevant: [...hits.querySelectorAll("input:checked")].map(b => b.value) });
+  load();
+  return [h("label", { className: "muted" }, "Question (edit it if a student wouldn't ask it this way)"), q,
+    h("div", { className: "bar" }, h("button", { onclick: load }, "Search again"), h("span", { className: "grow" }),
+      h("button", { onclick: () => persist({ ...item, source, dropped: true, reviewed: true }) }, "Drop question"), save),
+    hits];
+}
+
+function rankingView(item) {
+  const q = h("input", { type: "text", value: item.question });
+  const sql = h("textarea", { className: "sql", value: item.sql, spellcheck: false });
+  const out = h("div");
+  async function run() {
+    out.replaceChildren(h("p", { className: "muted" }, "Running…"));
+    const r = await api("/api/sql", { sql: sql.value });
+    if (r.error) return out.replaceChildren(h("p", { className: "err" }, r.error));
+    if (!r.rows.length) return out.replaceChildren(h("p", { className: "muted" }, "No rows. Refresh data/serving.duckdb, or loosen the filter."));
+    const cols = Object.keys(r.rows[0]);
+    out.replaceChildren(h("table", {}, h("tr", {}, cols.map(c => h("th", {}, c))),
+      r.rows.slice(0, 8).map(row => h("tr", {}, cols.map(c => h("td", {}, String(row[c] ?? "")))))));
+  }
+  run();
+  return [h("label", { className: "muted" }, "Question"), q, h("p", { className: "muted" }, "Reference SQL"), sql,
+    h("div", { className: "bar" }, h("button", { onclick: run }, "Run again"), h("span", { className: "grow" }),
+      h("button", { onclick: () => persist({ ...item, question: q.value.trim(), dropped: true, reviewed: true }) }, "Drop question"),
+      h("button", { className: "primary", onclick: () => persist({ ...item, question: q.value.trim(), sql: sql.value.trim(), dropped: false, reviewed: true }) }, "Approve & next")),
+    out];
+}
+
+function attributesView(item) {
+  const text = h("div", { className: "review" }, "Loading…");
+  api(`/api/review?id=${encodeURIComponent(item.review_id)}`).then(r =>
+    text.replaceChildren(h("div", { className: "tag" }, `${r.professor ?? ""} · ${r.course ?? ""}`), r.text));
+  const choice = { ...item };
+  const save = h("button", { className: "primary" }, "Save & next");
+  const ready = () => { save.disabled = Object.keys(state.attr_fields).some(f => !choice[f]); };
+  const groups = Object.entries(state.attr_fields).map(([field, opts]) =>
+    h("fieldset", {}, h("legend", {}, field.replace("_", " ")), opts.map(o => h("label", {},
+      h("input", { type: "radio", name: field, value: o, checked: choice[field] === o, onchange: () => { choice[field] = o; ready(); } }),
+      o.replace("_", " ")))));
+  save.onclick = () => persist({ ...choice, reviewed: true });
+  ready();
+  return [text, ...groups, h("div", { className: "bar" }, h("span", { className: "grow" }), save)];
+}
+
+function render() {
+  tabs();
+  const list = state[tab];
+  if (!(tab in pos)) pos[tab] = Math.max(0, list.findIndex(i => !i.reviewed));
+  const item = list[pos[tab]];
+  const views = { search: searchView, ranking: rankingView, attributes: attributesView };
+  document.getElementById("view").replaceChildren(...header(item), ...views[tab](item));
+}
+
+api("/api/state").then(s => { state = s; render(); });
+</script>
+</body>
+</html>

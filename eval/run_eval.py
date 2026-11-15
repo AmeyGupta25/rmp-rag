@@ -118,7 +118,7 @@ def main():
     ap.add_argument("--min-recall5", type=float, help="exit 1 if the first variant scores below this")
     a = ap.parse_args()
 
-    golden = [json.loads(line) for line in open("eval/golden.jsonl")][: a.limit]
+    golden = [g for line in open("eval/golden.jsonl") if not (g := json.loads(line)).get("dropped")][: a.limit]
     retrieval = score_retrieval(golden, a.variants)
     answers = score_answers(golden, ["openai/gpt-oss-120b", "openai/gpt-oss-20b"]) if a.llm else {}
     if a.limit is None:
