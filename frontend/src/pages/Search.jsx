@@ -18,7 +18,7 @@ const RATING = [["3.0", "3+"], ["4.0", "4+"], ["4.5", "4.5+"]];
 const DIFFICULTY = [["easy", "Easy"], ["medium", "Medium"], ["hard", "Hard"]];
 const WTA = [["70", "70%+"], ["85", "85%+"]];
 const TABS = [["professors", "Professors"], ["classes", "Classes"]];
-const STYLE = [["no_attendance", "Attendance optional"], ["curved", "Curved"], ["light_workload", "Light workload"]];
+const STYLE = [["no_attendance", "Attendance optional"], ["curved", "Usually curved"], ["light_workload", "Light workload"]];
 
 // Every write starts from the live URL, never from a copy an older render captured
 // (that copy is what made a filter click get undone by the search box's delayed write).

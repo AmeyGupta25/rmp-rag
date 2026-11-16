@@ -21,7 +21,9 @@ ANALYTICAL = re.compile(
 SCHEMA = """Tables (DuckDB):
 dim_professor(professor_id, name, department, avg_rating 0-5, avg_difficulty 0-5, num_ratings,
               would_take_again_pct 0-100)
-mart_professor_attributes(professor_id, attendance_mandatory_pct 0-100, curve_pct 0-100,
+mart_professor_attributes(professor_id, attendance_mandatory_pct 0-100,
+                          says_curved_pct 0-100 (share of reviews mentioning a curve that say yes; null under 5),
+                          says_curved, curve_mentions,
                           workload_score 0-100 (higher = heavier), common_exam_style, attribute_reviews)
 mart_course_professors(course_code like 'CSE101', professor_id, name, department, reviews,
                        avg_quality 1-5, avg_difficulty 1-5, last_reviewed_at)

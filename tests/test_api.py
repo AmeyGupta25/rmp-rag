@@ -30,10 +30,11 @@ _db.execute("""create table mart_course_professors as select * from (values
     ('CSE101', 'T4', 'Ada Lovelace', 'Computer Science', 9, 4.9, 3.0, timestamp '2026-06-01')
 ) t(course_code, professor_id, name, department, reviews, avg_quality, avg_difficulty, last_reviewed_at)""")
 _db.execute("""create table mart_professor_attributes as select * from (values
-    ('T1', 90.0, 10.0, 80.0, 'free_response', 20),
-    ('T4', 5.0, 75.0, 20.0, 'multiple_choice', 6),
-    ('T2', 10.0, 100.0, 10.0, 'mixed', 1)
-) t(professor_id, attendance_mandatory_pct, curve_pct, workload_score, common_exam_style, attribute_reviews)""")
+    ('T1', 90.0, 10.0, 1, 10, 80.0, 'free_response', 20),
+    ('T4', 5.0, 75.0, 6, 8, 20.0, 'multiple_choice', 6),
+    ('T2', 10.0, null, 1, 1, 10.0, 'mixed', 1)
+) t(professor_id, attendance_mandatory_pct, says_curved_pct, says_curved, curve_mentions, workload_score,
+    common_exam_style, attribute_reviews)""")
 _db.execute("""create table mart_professor_summaries as select 'T1' as professor_id, ['Clear'] as pros,
     ['Hard exams'] as cons, 'Tough.' as exams, 'Heavy.' as workload, ['R9'] as cited_review_ids,
     timestamp '2026-11-09' as generated_at""")
@@ -254,7 +255,7 @@ def test_course_terms_are_newest_first():
 
 def test_attribute_filters_need_enough_evidence():
     names = lambda **f: [p["name"] for p in client.get("/professors", params=f).json()["professors"]]  # noqa: E731
-    assert names(curved=True) == ["Ada Lovelace"]          # Miles Jones has 100% curve but 1 review
+    assert names(curved=True) == ["Ada Lovelace"]          # Miles Jones: 1 review says curved, too few to show
     assert names(no_attendance=True, light_workload=True) == ["Ada Lovelace"]
     assert "Brian Shotwell" not in names(no_attendance=True)
 

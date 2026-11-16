@@ -10,7 +10,12 @@ select
     professor_id,
     round(100 * avg(case when attendance_mandatory then 1.0 when not attendance_mandatory then 0.0 end), 1)
         as attendance_mandatory_pct,
-    round(100 * avg(case curve when 'yes' then 1.0 when 'no' then 0.0 end), 1)   as curve_pct,
+    -- Of the reviews that say whether grades were curved, the share that say yes. Only 1 in 9 reviews says,
+    -- so it stays null under 5 such reviews: "100%" from 3 comments would read as a sure thing.
+    case when count(*) filter (where curve in ('yes', 'no')) >= 5
+         then round(100 * avg(case curve when 'yes' then 1.0 when 'no' then 0.0 end), 1) end as says_curved_pct,
+    count(*) filter (where curve = 'yes')                                        as says_curved,
+    count(*) filter (where curve in ('yes', 'no'))                               as curve_mentions,
     round(100 * avg(case workload when 'heavy' then 1.0 when 'light' then 0.0
                                   when 'moderate' then 0.5 end), 1)              as workload_score,
     mode(exam_style) filter (where exam_style not in ('unknown'))                as common_exam_style,

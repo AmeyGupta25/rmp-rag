@@ -45,16 +45,16 @@ PROFESSOR_FROM = ("from dim_professor left join mart_professor_attributes using 
 PROFESSOR_SQL = f"""
 select professor_id, name, department, avg_rating, avg_difficulty, num_ratings,
        would_take_again_pct as would_take_again,
-       attendance_mandatory_pct, curve_pct, workload_score, common_exam_style,
+       attendance_mandatory_pct, says_curved_pct, says_curved, curve_mentions, workload_score, common_exam_style,
        graded_reviews, grade_a_pct, top_tags,
        s.pros[1] as verdict  -- one-line card summary, null until the summary backfill reaches them
 {PROFESSOR_FROM}
 """
-# Filter thresholds on the per-professor attribute shares (0-100). Curve and workload need a few
-# reviews that actually mention them, so one comment can't label a professor.
+# Filter thresholds on the per-professor attribute shares (0-100). Workload needs a few reviews that mention
+# it, so one comment can't label a professor (says_curved_pct is already null under 5 curve mentions).
 FILTERS = {
     "no_attendance": "attendance_mandatory_pct < 30",
-    "curved": "curve_pct >= 50 and attribute_reviews >= 3",
+    "curved": "says_curved_pct >= 50",
     "light_workload": "workload_score <= 35 and attribute_reviews >= 3",
 }
 

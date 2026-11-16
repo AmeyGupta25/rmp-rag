@@ -5,7 +5,7 @@ import { api } from "../api.js";
 import { useCompare } from "../compare.jsx";
 import { ErrorNotice } from "../components/ErrorNotice.jsx";
 import { Grades, MIN_GRADES, hasGrades } from "../components/Grades.jsx";
-import { one, pct, spaced } from "../components/ProfCard.jsx";
+import { curvedOf, one, pct, spaced } from "../components/ProfCard.jsx";
 import { rowWinner, verdict } from "../compare-rules.js";
 
 // better (see compare-rules.js): +1 higher wins, -1 lower wins, 0 never judged. Only rows where "better" isn't a
@@ -21,7 +21,7 @@ const GROUPS = [
   ["The class", [
     ["A- or better", "a_or_better", pct, 1, "Best grades"],
     ["Attendance required", "attendance_mandatory_pct", pct, 0],
-    ["Curved", "curve_pct", pct, 0],
+    ["Says it's curved", "says_curved_pct", (_, p) => curvedOf(p), 0],
     ["Workload (out of 100)", "workload_score", (v) => (v == null ? "—" : `${Math.round(v)}/100`), 0],
   ]],
 ];
@@ -145,7 +145,7 @@ export function Compare() {
                         const win = best != null && p[key] === best;
                         return (
                           <td key={p.professor_id} className={`cmp-val${win ? " win" : ""}`}>
-                            <span className="num">{fmt(p[key])}</span>{win && <Check size={15} role="img" aria-label="Better" />}
+                            <span className="num">{fmt(p[key], p)}</span>{win && <Check size={15} role="img" aria-label="Better" />}
                           </td>
                         );
                       })}

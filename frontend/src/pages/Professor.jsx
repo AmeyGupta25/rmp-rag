@@ -2,7 +2,7 @@ import { useEffect, useId, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useApi } from "../api.js";
 import { Grades, Tags, hasGrades } from "../components/Grades.jsx";
-import { LoadingCard, ProfCard, Stat, one, pct } from "../components/ProfCard.jsx";
+import { LoadingCard, ProfCard, Stat, curvedOf, one, pct } from "../components/ProfCard.jsx";
 import { TrendChart } from "../components/TrendChart.jsx";
 
 const monthYear = (d) => new Date(d).toLocaleDateString("en-US", { month: "short", year: "2-digit" });
@@ -45,7 +45,7 @@ export function Professor() {
   const mainCourses = p.by_course.filter((c) => c.reviews > 1);
   const courses = allCourses || !mainCourses.length ? p.by_course : mainCourses;
   const quarters = [...p.by_quarter].reverse();
-  const hasAttributes = p.attendance_mandatory_pct != null || p.curve_pct != null || p.workload_score != null;
+  const hasAttributes = p.attendance_mandatory_pct != null || p.says_curved_pct != null || p.workload_score != null;
   return (
     <>
       <p className="crumb"><Link to="/search">Search</Link> / {p.name}</p>
@@ -70,7 +70,7 @@ export function Professor() {
               <h2 id="attr-head" className="label-caps">From reviews that mention it</h2>
               <div className="stats">
                 {p.attendance_mandatory_pct != null && <Stat label="Attendance required" text={pct(p.attendance_mandatory_pct)} fill={p.attendance_mandatory_pct} />}
-                {p.curve_pct != null && <Stat label="Curved" text={pct(p.curve_pct)} fill={p.curve_pct} />}
+                {p.says_curved_pct != null && <Stat label="Says it's curved" text={curvedOf(p)} fill={p.says_curved_pct} />}
                 {p.workload_score != null && <Stat label="Workload" text={`${Math.round(p.workload_score)}/100`} fill={p.workload_score} />}
               </div>
             </section>
