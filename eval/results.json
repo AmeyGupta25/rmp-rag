@@ -1,0 +1,29 @@
+{
+ "retrieval": {
+  "dense": {
+   "recall@1": 0.262,
+   "recall@5": 0.635,
+   "recall@10": 0.757,
+   "mrr": 0.745,
+   "p50_ms": 292.3,
+   "p95_ms": 1519.0,
+   "questions": 50
+  },
+  "dense + rerank": {
+   "recall@1": 0.332,
+   "recall@5": 0.771,
+   "recall@10": 0.936,
+   "mrr": 0.877,
+   "p50_ms": 546.8,
+   "p95_ms": 800.6,
+   "questions": 50
+  }
+ },
+ "ranking": {
+  "top1": 0.842,
+  "top3_overlap": 0.754,
+  "failed": 0,
+  "p50_ms": 662.4,
+  "questions": 19
+ }
+}

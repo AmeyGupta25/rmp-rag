@@ -1,4 +1,4 @@
-from eval.run_eval import recall_at, reciprocal_rank
+from eval.run_eval import attribute_scores, ranking_match, recall_at, reciprocal_rank
 
 
 def test_recall_counts_relevant_reviews_found_in_top_k():
@@ -27,3 +27,22 @@ def test_labeling_pools_both_variants_and_saves_in_place(monkeypatch, tmp_path):
     (tmp_path / "g.jsonl").write_text('{"qid": 1, "relevant": ["a"]}\n{"qid": 2, "relevant": ["b"]}\n')
     label.save("search", {"qid": 2, "relevant": ["b", "c"], "reviewed": True})
     assert label.load("search") == [{"qid": 1, "relevant": ["a"]}, {"qid": 2, "relevant": ["b", "c"], "reviewed": True}]
+
+
+def test_ranking_compares_top_pick_and_top_three_by_name_or_department():
+    ref = [{"name": "A", "x": 1}, {"name": "B"}, {"name": "C"}, {"name": "D"}]
+    assert ranking_match([{"name": "A"}, {"name": "C"}, {"name": "Z"}], ref) == (True, 2 / 3)
+    assert ranking_match([], ref) == (False, 0.0)
+    assert ranking_match([{"department": "Music"}], [{"department": "Music"}, {"department": "Art"}]) == (True, 0.5)
+    assert ranking_match([{"name": "A"}], []) is None  # an empty reference can't be scored
+
+
+def test_attribute_scores_separate_stated_labels_from_invented_ones():
+    s = attribute_scores([("yes", "yes"), ("no", "yes"), ("unknown", "unknown"), ("unknown", "yes")])
+    assert s == {"accuracy": 0.5, "stated": 2, "stated_correct": 0.5, "invented": 0.5}
+    assert attribute_scores([("unknown", "unknown")])["stated_correct"] is None
+
+
+def test_a_count_answer_is_compared_by_its_number():
+    assert ranking_match([{"n": 41}], [{"professors": 41}]) == (True, 1.0)
+    assert ranking_match([{"n": 12}], [{"professors": 41}])[0] is False

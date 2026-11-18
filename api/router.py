@@ -31,8 +31,13 @@ mart_department_stats(department, professors, reviews, avg_quality, avg_difficul
 
 PROMPT = """Write ONE DuckDB SELECT that answers the student's question from these tables.
 {schema}
+Departments (use these exact names): {departments}
 Rules: a single SELECT (no CTEs, no other statements), only these tables, include name and the numbers
-that justify the answer, prefer professors with num_ratings >= 5 for rankings, LIMIT {max_rows}.
+that justify the answer, LIMIT {max_rows}. Rankings need enough reviews to be fair:
+- professors: num_ratings >= 5
+- one course: mart_course_professors, course_code = the exact code, reviews >= 5
+- departments: mart_department_stats, reviews >= 100 (never average dim_professor yourself)
+- attendance, curve or workload: mart_professor_attributes, attribute_reviews >= 5
 Course codes have no spaces ("CSE 101" -> 'CSE101'). {department}
 Reply with JSON: {{"sql": "..."}}
 
@@ -84,14 +89,24 @@ def run_sql(cursor, sql):
 def database_context(groq_client, model, cursor, question, department=""):
     """Rows answering an analytical question, formatted for the prompt, plus the SQL used."""
     dept = f"The student filtered to the {department} department." if department else ""
-    resp = groq_client.chat.completions.create(
-        model=model, temperature=0, max_tokens=700, reasoning_effort="low",
-        response_format={"type": "json_object"},
-        messages=[{"role": "user", "content": PROMPT.format(
-            schema=SCHEMA, max_rows=MAX_ROWS, department=dept, question=question)}],
-    )
-    sql = json.loads(resp.choices[0].message.content)["sql"]
-    found = run_sql(cursor, sql)
+    names = [d for (d,) in cursor.execute("select distinct department from dim_professor order by 1").fetchall()]
+    messages = [{"role": "user", "content": PROMPT.format(schema=SCHEMA, departments=", ".join(map(str, names)),
+                                                          max_rows=MAX_ROWS, department=dept, question=question)}]
+    for attempt in range(2):  # one retry, shown its own error: a wrong column name is the usual slip
+        resp = groq_client.chat.completions.create(
+            model=model, temperature=0, max_tokens=700, reasoning_effort="low",
+            response_format={"type": "json_object"}, messages=messages)
+        reply = resp.choices[0].message.content
+        try:
+            sql = json.loads(reply)["sql"]
+            found = run_sql(cursor, sql)
+            break
+        except Exception as e:
+            if attempt:
+                raise
+            messages += [{"role": "assistant", "content": reply},
+                         {"role": "user", "content": f"That failed: {type(e).__name__}: {str(e)[:300]}. "
+                                                     "Reply with a corrected query."}]
     if not found:
         return "", sql
     header = " | ".join(found[0])
