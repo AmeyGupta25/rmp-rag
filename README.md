@@ -46,8 +46,8 @@ An AI-powered chatbot for UCSD students to ask natural language questions about 
 ### Backend
 ```bash
 cd rmp-rag
-python -m venv venv
-source venv/bin/activate
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements-dev.txt
 ```
 
