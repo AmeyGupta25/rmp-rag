@@ -20,13 +20,11 @@ function useAnnouncePage(pathname, main) {
   }, [pathname, main]);
 }
 
-// A diagonal trident in the style of UCSD's (barbed blades with cut-outs on a bent crossbar), drawn from scratch in the
-// product's violet (no navy/gold, no card frame), so it reads as a nod to UCSD rather than an official mark.
-// Same drawing as public/favicon.svg; the cut-outs need fill-rule evenodd.
-const TRIDENT = "M24.28 7.72 21.41 17.24 20.25 13.88 14.05 20.08 20.52 21.22 31.37 15.69 25.39 25.22 24.46 23.13 22.33 25.08 11.79 22.33 2.76 31.37 0.63 29.24 9.67 20.21 6.92 9.67 8.87 7.54 6.78 6.61 16.31 0.63 10.78 11.48 11.92 17.95 18.12 11.75 14.76 10.59ZM22.56 10.24 21.14 14.94 20.21 12.86ZM29.16 17.9 25.57 23.53 24.68 21.76ZM14.1 2.84 8.47 6.43 10.24 7.32Z";
+// A graduation cap, drawn from scratch in the product's violet. Same drawing as public/favicon.svg.
+const CAP = "M2.96 12.15Q1.50 11.50 2.96 10.85L14.54 5.65Q16.00 5.00 17.46 5.65L29.04 10.85Q30.50 11.50 29.04 12.15L17.46 17.35Q16.00 18.00 14.54 17.35ZM8.00 16.21L14.00 18.90Q16.00 19.95 18.00 18.90L24.00 16.21L24.00 22.60C24.00 25.40 20.40 27.00 16.00 27.00C11.60 27.00 8.00 25.40 8.00 22.60ZM28.60 11.60L29.80 11.60L29.80 20.80L28.60 20.80ZM27.90 21.10Q27.90 20.20 28.80 20.20L29.60 20.20Q30.50 20.20 30.50 21.10L30.50 24.50Q30.50 25.40 29.60 25.40L28.80 25.40Q27.90 25.40 27.90 24.50Z";
 
 function Logo() {
-  return <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><path d={TRIDENT} fillRule="evenodd" fill="var(--violet)" /></svg>;
+  return <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><path d={CAP} fill="var(--violet)" /></svg>;
 }
 
 // Optional Google sign-in: it only syncs the shortlist, so everything else works signed out.
