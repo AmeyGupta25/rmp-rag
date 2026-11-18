@@ -8,6 +8,8 @@ import { Grades, MIN_GRADES, Tags } from "./Grades.jsx";
 
 export const one = (v) => (v == null ? "—" : Number(v).toFixed(1));
 export const pct = (v) => (v == null ? "—" : `${Math.round(v)}%`);
+// Few reviews say whether grades were curved, so the count is the honest form ("26 of 41 reviews"), not a %.
+export const curvedOf = (p) => (p.says_curved_pct == null ? "—" : `${p.says_curved} of ${p.curve_mentions} reviews`);
 export const spaced = (code) => code.replace(/^([A-Z]+)(\d)/, "$1 $2");  // "CSE101" -> "CSE 101"
 const still = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -38,12 +40,13 @@ function SaveButton({ id, name }) {
 export function CompareButton({ id, name }) {
   const { ids, toggle } = useCompare();
   const on = ids.includes(id);
-  const full = !on && ids.length >= 3;
+  const full = !on && ids.length >= 3;  // adding a fourth swaps out the first pick (see compare.jsx)
   return (
-    <button type="button" className="btn ghost small" aria-pressed={on} disabled={full}
-      aria-label={full ? `Compare is full: remove a professor to add ${name}` : `${on ? "Remove" : "Add"} ${name} ${on ? "from" : "to"} compare`}
+    <button type="button" className="btn ghost small" aria-pressed={on}
+      aria-label={full ? `Swap ${name} into compare, in place of your first pick` : `${on ? "Remove" : "Add"} ${name} ${on ? "from" : "to"} compare`}
+      title={full ? "Compare holds three: this replaces your first pick" : undefined}
       onClick={() => toggle(id)}>
-      {on && <Check size={15} aria-hidden="true" />}{on ? "In compare" : full ? "Compare full" : "Compare"}
+      {on && <Check size={15} aria-hidden="true" />}{on ? "In compare" : full ? "Swap in" : "Compare"}
     </button>
   );
 }
@@ -70,14 +73,15 @@ function useCountUp(value, deal) {
 
 // The back explains what the class is like and why to pick or avoid them. The verdict (the first pro)
 // is already on the front, so a summary alone, grades or attendance/curve shares are what earn a flip.
-const hasBack = (p) => p.verdict != null || p.graded_reviews >= MIN_GRADES || p.attendance_mandatory_pct != null || p.curve_pct != null;
+const hasBack = (p) => p.verdict != null || p.graded_reviews >= MIN_GRADES || p.attendance_mandatory_pct != null || p.says_curved_pct != null;
 
 function Back({ p, flipped, onFlip, flipRef, heading: H }) {
   const Sub = `h${Math.min(6, Number(H[1]) + 1)}`;  // one level under the card's name, never skipping one
   const { data, loading } = useApi(`/professors/${encodeURIComponent(p.professor_id)}`);
   const s = data?.summary;
   const pros = s?.pros?.slice(1, 4) ?? [];
-  const facts = [["Attendance required", p.attendance_mandatory_pct], ["Curved", p.curve_pct]].filter(([, v]) => v != null);
+  const facts = [["Attendance required", p.attendance_mandatory_pct != null && pct(p.attendance_mandatory_pct)],
+    ["Says it's curved", p.says_curved_pct != null && curvedOf(p)]].filter(([, v]) => v);
   const classy = s?.exams || s?.workload || facts.length > 0;
   // Same rule as the Professor page: one-review courses are mostly one-off codes students typed.
   const courses = (data?.by_course ?? []).filter((c) => c.reviews > 1).slice(0, 3);
@@ -93,7 +97,7 @@ function Back({ p, flipped, onFlip, flipRef, heading: H }) {
               <Sub className="back-h">The class</Sub>
               {s?.exams && <p className="kv"><b>Exams</b>{s.exams}</p>}
               {s?.workload && <p className="kv"><b>Workload</b>{s.workload}</p>}
-              {facts.length > 0 && <ul className="tags facts">{facts.map(([l, v]) => <li key={l} className="tag">{l} <b className="num">{pct(v)}</b></li>)}</ul>}
+              {facts.length > 0 && <ul className="tags facts">{facts.map(([l, v]) => <li key={l} className="tag">{l} <b className="num">{v}</b></li>)}</ul>}
             </div>
           )}
           {courses.length > 0 && (
@@ -157,9 +161,9 @@ export function ProfCard({ p, rank, best, badge = "Best pick", link = true, head
           </div>
           {few && <p className="few-note">Based on {p.num_ratings} rating{p.num_ratings === 1 ? "" : "s"}, so treat it as a hint.</p>}
           <div className="stats">
-            <Stat label="Difficulty" text={one(p.avg_difficulty)} fill={p.avg_difficulty == null ? null : p.avg_difficulty * 20} />
+            {p.avg_difficulty != null && <Stat label="Difficulty" text={one(p.avg_difficulty)} fill={p.avg_difficulty * 20} />}
             {p.would_take_again != null && <Stat label="Would take again" text={pct(p.would_take_again)} fill={p.would_take_again} tone="green" />}
-            {p.graded_reviews >= MIN_GRADES && <Stat label="A- or better" text={pct(100 * p.grade_a_pct)} fill={100 * p.grade_a_pct} tone="violet" />}
+            {p.graded_reviews >= MIN_GRADES && <Stat label="A- or better" text={pct(100 * p.grade_a_pct)} fill={100 * p.grade_a_pct} tone="ink" />}
             <Stat label="Ratings" text={p.num_ratings} />
           </div>
           <Tags tags={p.top_tags} />

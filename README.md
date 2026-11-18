@@ -12,7 +12,6 @@ An AI-powered chatbot for UCSD students to ask natural language questions about 
 
 - Ask natural language questions about any UCSD professor
 - Answers grounded in 21,649 real student reviews from Rate My Professor, with citations
-- Conversation memory (the AI remembers context across your session)
 - Filter questions by department
 - Search 500 professors and every reviewed class, with filters for rating, difficulty, grades and class style
 - Compare up to three professors side by side
@@ -47,8 +46,8 @@ An AI-powered chatbot for UCSD students to ask natural language questions about 
 ### Backend
 ```bash
 cd rmp-rag
-python -m venv venv
-source venv/bin/activate
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements-dev.txt
 ```
 

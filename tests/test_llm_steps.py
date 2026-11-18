@@ -15,6 +15,24 @@ def test_numbered_results_map_back_to_the_right_reviews_and_bad_ones_are_rejecte
     assert rejects[0]["record"] == {"review_id": "R3"}
 
 
+def test_two_reviews_with_the_same_text_are_each_extracted(monkeypatch, tmp_path):
+    import duckdb
+
+    from pipeline import extract
+
+    wh = str(tmp_path / "wh.duckdb")
+    con = duckdb.connect(wh)
+    con.execute("create table dim_professor as select 'P1' as professor_id, 10 as num_ratings")
+    con.execute("""create table fct_review as select * from (values
+        ('R1', 'P1', 'Great prof.', timestamp '2024-01-01'), ('R2', 'P1', 'Great prof.', timestamp '2024-02-01'))
+        t(review_id, professor_id, comment, reviewed_at)""")
+    con.close()
+    monkeypatch.setattr(extract, "RAW_ROOT", tmp_path)
+    extract.write_jsonl("review_attributes", "2024-03-01", "r1",
+                        [{"review_id": "R1", "comment_hash": attributes.comment_hash("Great prof.")}])
+    assert [rid for rid, _, _ in attributes.pending(wh)] == ["R2"]
+
+
 def test_a_missing_result_is_rejected_not_guessed():
     rows, rejects = attributes.parse(BATCH[:1], {"results": []})
     assert rows == [] and len(rejects) == 1

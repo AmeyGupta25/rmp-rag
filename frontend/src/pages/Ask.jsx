@@ -1,7 +1,7 @@
-import { AlertCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { api, useApi } from "../api.js";
 import { Answer, citedNumbers, sourceMeta } from "../components/Answer.jsx";
+import { ErrorNotice } from "../components/ErrorNotice.jsx";
 import { LoadingCard, ProfCard } from "../components/ProfCard.jsx";
 
 const SUGGESTIONS = [
@@ -20,8 +20,8 @@ export function Ask() {
   const [department, setDepartment] = useState(() => remembered().department || "");
   const [result, setResult] = useState(() => remembered().result || null);
   const [status, setStatus] = useState({});
-  const [active, setActive] = useState(null);
-  const [fresh, setFresh] = useState(false);  // deal the hand only for a new answer, not one restored on Back  // the citation number lit in both the answer and Sources
+  const [active, setActive] = useState(null);  // the citation number lit in both the answer and Sources
+  const [fresh, setFresh] = useState(false);  // deal the hand only for a new answer, not one restored on Back
   const departments = useApi("/departments").data?.departments || [];
 
   // Keep the last answer when the student opens a professor and comes back.
@@ -77,13 +77,7 @@ export function Ask() {
       )}
 
       {status.error && (
-        <div className="notice error gap-top" role="alert">
-          <AlertCircle size={20} aria-hidden="true" />
-          <div>
-            <p>{status.error.message}</p>
-            {status.error.status !== 429 && <button type="button" className="btn ghost small retry" onClick={() => ask()}>Try again</button>}
-          </div>
-        </div>
+        <ErrorNotice error={status.error} retry={() => ask()} className="gap-top" />
       )}
 
       {status.loading ? (

@@ -1,3 +1,5 @@
+import json
+
 import duckdb
 import pytest
 
@@ -40,3 +42,32 @@ def test_anything_else_is_refused_before_running(cur, sql):
 def test_results_are_capped(cur):
     cur.execute("create table mart_department_stats as select range as department from range(100)")
     assert len(router.run_sql(cur, "select * from mart_department_stats")) == router.MAX_ROWS
+
+
+class FakeGroq:
+    """Replies with the given SQL strings in order and keeps the prompts it was sent."""
+
+    def __init__(self, *sqls):
+        self.replies, self.sent = [json.dumps({"sql": s}) for s in sqls], []
+        self.chat = self.completions = self
+
+    def create(self, messages, **_):
+        self.sent.append(messages)
+        content = self.replies.pop(0)
+        return type("R", (), {"choices": [type("C", (), {"message": type("M", (), {"content": content})})]})
+
+
+def test_the_prompt_lists_real_department_names_and_a_failed_query_is_retried_once(cur):
+    cur.execute("alter table dim_professor add column department varchar default 'Mathematics'")
+    groq = FakeGroq("select name, workload from dim_professor", "select name, avg_rating from dim_professor")
+    table, sql = router.database_context(groq, "m", cur, "Easiest math professor?")
+    assert "Mathematics" in groq.sent[0][0]["content"]
+    assert "workload" in groq.sent[1][-1]["content"]  # the retry is shown its own error
+    assert sql == "select name, avg_rating from dim_professor" and "Ada" in table
+
+
+def test_a_query_that_fails_twice_raises_so_the_api_falls_back_to_reviews(cur):
+    cur.execute("alter table dim_professor add column department varchar default 'Mathematics'")
+    with pytest.raises(duckdb.BinderException):
+        router.database_context(FakeGroq("select nope from dim_professor", "select nope2 from dim_professor"),
+                                "m", cur, "q")

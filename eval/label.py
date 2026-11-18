@@ -8,7 +8,7 @@ Review text is shown in the browser only. Files get IDs and labels, never text (
 """
 
 import json
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import get_args
 from urllib.parse import parse_qs, urlparse
@@ -18,15 +18,17 @@ import duckdb
 from api import router
 from data.vectorstore import rerank, search
 from eval.run_eval import NAMESPACE
-from pipeline.attributes import SINCE_YEAR, Attributes
+from pipeline.attributes import SINCE_YEAR, WAREHOUSE_PATH, Attributes
 
 EVAL = Path(__file__).parent
 FILES = {"search": EVAL / "golden.jsonl", "ranking": EVAL / "ranking.jsonl",
          "attributes": EVAL / "attributes_gold.jsonl"}
 KEYS = {"search": "qid", "ranking": "qid", "attributes": "review_id"}
-WAREHOUSE, SERVING = "data/warehouse.duckdb", "data/serving.duckdb"
+WAREHOUSE, SERVING = WAREHOUSE_PATH, "data/serving.duckdb"
 ATTR_FIELDS = {f: list(get_args(Attributes.model_fields[f].annotation)) for f in Attributes.model_fields}
 ATTR_SAMPLE = 100
+HOST, PORT = "127.0.0.1", 8765
+ORIGIN = f"http://{HOST}:{PORT}"
 
 
 def load(name):
@@ -102,6 +104,9 @@ class Handler(BaseHTTPRequestHandler):
             self.reply({"error": "not found"}, 404)
 
     def do_POST(self):
+        # Browsers send a cross-site text/plain POST without asking: only this tool's own page may write.
+        if self.headers.get("Origin", ORIGIN) != ORIGIN:
+            return self.reply({"error": "forbidden"}, 403)
         body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
         if self.path == "/api/sql":
             self.reply(run_sql(body["sql"]))
@@ -117,5 +122,6 @@ class Handler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     ensure_attribute_sample()
-    print("Labeling tool: http://127.0.0.1:8765  (Ctrl+C to stop)")
-    HTTPServer(("127.0.0.1", 8765), Handler).serve_forever()  # local only: it serves review text
+    print(f"Labeling tool: {ORIGIN}  (Ctrl+C to stop)")
+    # local only: it serves review text. Threaded, so one slow search can't freeze the page.
+    ThreadingHTTPServer((HOST, PORT), Handler).serve_forever()

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useApi } from "../api.js";
 import { sortRows } from "../sort-rows.js";
+import { ErrorNotice } from "../components/ErrorNotice.jsx";
 import { CompareButton, FEW, LoadingCard, ProfCard, one, spaced } from "../components/ProfCard.jsx";
 
 const COURSE = /^\s*([a-z]{2,5})\s*(\d{1,3}[a-z]{0,2})\s*$/i;  // "CSE 101", "math20c"
@@ -17,7 +18,7 @@ const RATING = [["3.0", "3+"], ["4.0", "4+"], ["4.5", "4.5+"]];
 const DIFFICULTY = [["easy", "Easy"], ["medium", "Medium"], ["hard", "Hard"]];
 const WTA = [["70", "70%+"], ["85", "85%+"]];
 const TABS = [["professors", "Professors"], ["classes", "Classes"]];
-const STYLE = [["no_attendance", "Attendance optional"], ["curved", "Curved"], ["light_workload", "Light workload"]];
+const STYLE = [["no_attendance", "Attendance optional"], ["curved", "Usually curved"], ["light_workload", "Light workload"]];
 
 // Every write starts from the live URL, never from a copy an older render captured
 // (that copy is what made a filter click get undone by the search box's delayed write).
@@ -171,9 +172,9 @@ function byInstructor({ professors, offerings }) {
 const COURSE_COLS = [["reviews", "Reviews here", "Reviews", 1], ["avg_quality", "Quality", "Quality", 1], ["avg_difficulty", "Difficulty", "Difficulty", -1]];
 
 function Course({ code }) {
-  const { data, error, loading } = useApi(`/courses/${encodeURIComponent(code)}`);
+  const { data, error, loading, retry } = useApi(`/courses/${encodeURIComponent(code)}`);
   const [by, setBy] = useState("reviews");
-  if (error) return <div className="notice error" role="alert">{error.message}</div>;
+  if (error) return <ErrorNotice error={error} retry={retry} />;
   if (loading) return <div className="skeleton course-skeleton" aria-hidden="true" />;
   const dir = COURSE_COLS.find(([k]) => k === by)[3];
   const rows = sortRows(byInstructor(data), by, dir);
@@ -219,8 +220,8 @@ const classLink = (code) => `/search?tab=classes&course=${encodeURIComponent(cod
 
 // Every course with reviews, most-reviewed first; the search box narrows it by code ("CSE", "MATH 20").
 function CourseList({ q }) {
-  const { data, error, loading } = useApi(`/courses?search=${encodeURIComponent(q)}`, { smooth: true });
-  if (error) return <div className="notice error" role="alert">{error.message}</div>;
+  const { data, error, loading, retry } = useApi(`/courses?search=${encodeURIComponent(q)}`, { smooth: true });
+  if (error) return <ErrorNotice error={error} retry={retry} />;
   if (!data) return <div className="skeleton course-skeleton" aria-hidden="true" />;
   return (
     <section className="results" aria-labelledby="results-count">
@@ -305,7 +306,7 @@ export function Search() {
   const apiParams = new URLSearchParams(params);
   ["q", "tab", "course"].forEach((k) => apiParams.delete(k));
   if (q) apiParams.set("search", q);
-  const { data, error, loading } = useApi(classes || course ? null : `/professors?${apiParams}`, { smooth: true });
+  const { data, error, loading, retry } = useApi(classes || course ? null : `/professors?${apiParams}`, { smooth: true });
   const f = data?.facets;
 
   const departments = params.getAll("department");
@@ -379,7 +380,7 @@ export function Search() {
             <p id="sort-help" className="sort-help">Sorted by {sort[2].charAt(0).toLowerCase() + sort[2].slice(1)}.</p>
           </div>
 
-          {error ? <div className="notice error" role="alert">{error.message}</div>
+          {error ? <ErrorNotice error={error} retry={retry} />
             : loading && !data ? <div className="deck">{[1, 2, 3, 4, 5, 6].map((i) => <LoadingCard key={i} />)}</div>
             : data.professors.length === 0 ? (
               <div className="empty">

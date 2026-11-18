@@ -6,6 +6,7 @@ result in the raw layer. Only subjects that appear in our reviews are fetched.
 """
 
 import argparse
+import os
 import re
 import time
 from datetime import UTC, datetime
@@ -17,6 +18,7 @@ from pipeline import extract
 URL = "https://act.ucsd.edu/scheduleOfClasses/scheduleOfClassesStudentResult.htm"
 DEFAULT_TERMS = ["FA25", "WI26", "SP26"]
 DELAY = 1.0  # one request per second
+WAREHOUSE_PATH = os.getenv("WAREHOUSE_PATH", "data/warehouse.duckdb")
 SUBJECTS_PER_SEARCH = 1  # one per search: an unknown subject code makes the whole search return nothing
 
 COURSE = re.compile(r"courseId=([A-Z]+\d+[A-Z]*)\s*'")
@@ -40,7 +42,7 @@ def page_count(html):
     return int(m.group(1)) if m else 1
 
 
-def subjects(warehouse="data/warehouse.duckdb"):
+def subjects(warehouse=WAREHOUSE_PATH):
     con = duckdb.connect(warehouse, read_only=True)
     rows = con.execute("""select distinct regexp_extract(course_code, '^[A-Z]+') from fct_review
                           where regexp_matches(course_code, '^[A-Z]{2,5}[0-9]')""").fetchall()

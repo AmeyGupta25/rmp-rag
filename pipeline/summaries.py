@@ -6,6 +6,7 @@ stops at the daily token cap. Each summary cites the review ids it drew on.
 
 import hashlib
 import json
+import os
 from datetime import UTC, datetime
 
 import duckdb
@@ -15,7 +16,7 @@ from pipeline import extract, llm
 
 MODEL = "openai/gpt-oss-120b"
 RECENT = 40
-WAREHOUSE_PATH = "data/warehouse.duckdb"
+WAREHOUSE_PATH = os.getenv("WAREHOUSE_PATH", "data/warehouse.duckdb")
 
 Point = Field(max_length=200)
 
