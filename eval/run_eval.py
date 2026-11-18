@@ -22,6 +22,9 @@ NAMESPACE = "reviews"  # the pipeline's namespace: vector id == review id
 # The provider's daily token quota is per account and shared with the live site and the backfill
 # (200k per model), so one eval run may use only this much of each model's quota.
 EVAL_TOKEN_CAP = int(os.getenv("EVAL_TOKEN_CAP", "50000"))
+# The model that checks answers for unsupported claims. The larger one is the stricter checker, and its
+# quota is the one with room: the smaller model's goes mostly to the daily backfill.
+JUDGE_MODEL = os.getenv("EVAL_JUDGE_MODEL", "openai/gpt-oss-120b")
 
 
 class BudgetSpent(Exception):
@@ -121,8 +124,8 @@ def score_answers(golden, models, groq):
                               {"role": "user", "content": g["question"]}],
                 )
                 ms.append((time.perf_counter() - t) * 1000)
-                judge = groq.chat.completions.create(  # the smaller model judges, to spare the chat model's budget
-                    model="openai/gpt-oss-20b", temperature=0, max_tokens=200, reasoning_effort="low",
+                judge = groq.chat.completions.create(
+                    model=JUDGE_MODEL, temperature=0, max_tokens=200, reasoning_effort="low",
                     messages=[{"role": "user", "content": JUDGE.format(context=context,
                                                                        answer=resp.choices[0].message.content)}],
                 )
@@ -265,7 +268,7 @@ def main():
     ap.add_argument("--variants", nargs="+", default=list(VARIANTS))
     ap.add_argument("--stages", nargs="*", default=[], choices=["answers", "ranking", "attributes"],
                     help="LLM parts to score too (they use the provider's daily token limit)")
-    ap.add_argument("--models", nargs="+", default=["openai/gpt-oss-120b", "openai/gpt-oss-20b"],
+    ap.add_argument("--models", nargs="+", default=["openai/gpt-oss-120b"],
                     help="answer models to compare")
     ap.add_argument("--skip-retrieval", action="store_true", help="keep the saved retrieval scores")
     ap.add_argument("--min-recall5", type=float, help="exit 1 if the first variant scores below this")
