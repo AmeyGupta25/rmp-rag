@@ -46,3 +46,22 @@ def test_attribute_scores_separate_stated_labels_from_invented_ones():
 def test_a_count_answer_is_compared_by_its_number():
     assert ranking_match([{"n": 41}], [{"professors": 41}]) == (True, 1.0)
     assert ranking_match([{"n": 12}], [{"professors": 41}])[0] is False
+
+
+def test_the_eval_client_stops_a_model_at_its_cap_and_keeps_others_open():
+    from unittest.mock import MagicMock
+
+    import pytest
+
+    from eval.run_eval import BudgetSpent, MeteredGroq, out_of_budget
+
+    inner = MagicMock()
+    inner.chat.completions.create.return_value = MagicMock(usage=MagicMock(total_tokens=60))
+    groq = MeteredGroq(inner, cap=100)
+    groq.chat.completions.create(model="big", messages=[])
+    groq.chat.completions.create(model="big", messages=[])  # 120 used: over the cap only after this call
+    with pytest.raises(BudgetSpent) as e:
+        groq.chat.completions.create(model="big", messages=[])
+    groq.chat.completions.create(model="small", messages=[])
+    assert groq.used == {"big": 120, "small": 60} and out_of_budget(e.value)
+    assert out_of_budget(Exception("429 tokens per day (TPD)")) and not out_of_budget(Exception("400"))

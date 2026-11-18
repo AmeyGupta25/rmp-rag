@@ -88,6 +88,22 @@ def test_ask_returns_answer_and_uses_configured_model():
     assert main.groq_client.chat.completions.create.call_args.kwargs["model"] == main.GROQ_MODEL
 
 
+def test_a_spent_daily_quota_falls_back_to_the_smaller_model():
+    msg = MagicMock(content="An answer.")
+    main.groq_client.chat.completions.create.side_effect = [
+        Exception("Error code: 429 - Rate limit reached on tokens per day (TPD)"),
+        MagicMock(choices=[MagicMock(message=msg)])]
+    r = client.post("/ask", json={"question": "Who teaches physics?"})
+    assert r.status_code == 200 and r.json()["answer"] == "An answer."
+    assert main.groq_client.chat.completions.create.call_args.kwargs["model"] == main.FALLBACK_MODEL
+
+
+def test_other_model_errors_are_not_retried_on_the_fallback():
+    main.groq_client.chat.completions.create.side_effect = Exception("Error code: 400 - bad request")
+    assert client.post("/ask", json={"question": "Who teaches physics?"}).status_code == 502
+    assert main.groq_client.chat.completions.create.call_count == 1
+
+
 def test_upstream_failure_is_502_without_leaking_details():
     fake_vs.query.side_effect = RuntimeError("quota exceeded for index rmp-rag")
     r = client.post("/ask", json={"question": "anything"})

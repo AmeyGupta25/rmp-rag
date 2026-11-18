@@ -1,7 +1,7 @@
 """Score retrieval (and optionally answers, rankings and attributes) against the hand-labeled sets.
 
 Retrieval (eval/golden.jsonl): recall@1/5/10 and MRR (mean reciprocal rank of the first relevant review).
-With --llm:
+With --stages (each model's spend per run is capped, see MeteredGroq):
 - answers: latency, tokens, and groundedness judged by a second model
 - rankings (eval/ranking.jsonl): the app's SQL router vs the approved reference SQL, top pick and top 3
 - attributes (eval/attributes_gold.jsonl): the pipeline's extraction prompt vs hand labels
@@ -10,13 +10,52 @@ Writes eval/results.json and eval/results.md (scores only, never review text).
 
 import argparse
 import json
+import os
 import statistics
 import time
+from collections import Counter
 from pathlib import Path
 
 from data.vectorstore import rerank, search
 
 NAMESPACE = "reviews"  # the pipeline's namespace: vector id == review id
+# The provider's daily token quota is per account and shared with the live site and the backfill
+# (200k per model), so one eval run may use only this much of each model's quota.
+EVAL_TOKEN_CAP = int(os.getenv("EVAL_TOKEN_CAP", "50000"))
+# The model that checks answers for unsupported claims. The larger one is the stricter checker, and its
+# quota is the one with room: the smaller model's goes mostly to the daily backfill.
+JUDGE_MODEL = os.getenv("EVAL_JUDGE_MODEL", "openai/gpt-oss-120b")
+
+
+class BudgetSpent(Exception):
+    """This run's share of a model's daily quota is used up."""
+
+
+class MeteredGroq:
+    """A Groq client that counts tokens per model and refuses calls past the cap, so an eval can never
+    eat the budget the live site answers from. Stands in wherever a Groq client is expected."""
+
+    def __init__(self, inner, cap=EVAL_TOKEN_CAP):
+        self.inner, self.cap, self.used = inner, cap, Counter()
+        self.chat = self.completions = self  # so .chat.completions.create(...) works like the real client
+
+    def create(self, model, **kw):
+        if self.used[model] >= self.cap:
+            raise BudgetSpent(model)
+        resp = self.inner.chat.completions.create(model=model, **kw)
+        self.used[model] += resp.usage.total_tokens
+        return resp
+
+
+def out_of_budget(e):
+    """Our cap, or the provider's daily quota (spent by someone else): stop and keep what's scored."""
+    return isinstance(e, BudgetSpent) or "per day" in str(e)
+
+
+def _groq():
+    from groq import Groq
+
+    return MeteredGroq(Groq())
 
 
 def recall_at(ranked_ids, relevant, k):
@@ -68,37 +107,41 @@ ANSWER:
 {answer}"""
 
 
-def score_answers(golden, models):
-    from groq import Groq
-
+def score_answers(golden, models, groq):
     from api.main import SYSTEM_PROMPT
 
-    groq = Groq()
     results = {}
     for model in models:
         ms, tokens, grounded = [], [], []
         for g in golden:
             context = "\n\n---\n\n".join(m["text"] for m in search(g["question"], top_k=8, namespace=NAMESPACE))
-            t = time.perf_counter()
-            resp = groq.chat.completions.create(
-                model=model, temperature=0.3, max_tokens=800, reasoning_effort="low",
-                messages=[{"role": "system", "content": SYSTEM_PROMPT},
-                          {"role": "system", "content": f"Context from Rate My Professor reviews:\n\n{context}"},
-                          {"role": "user", "content": g["question"]}],
-            )
-            ms.append((time.perf_counter() - t) * 1000)
+            try:
+                t = time.perf_counter()
+                resp = groq.chat.completions.create(
+                    model=model, temperature=0.3, max_tokens=800, reasoning_effort="low",
+                    messages=[{"role": "system", "content": SYSTEM_PROMPT},
+                              {"role": "system", "content": f"Context from Rate My Professor reviews:\n\n{context}"},
+                              {"role": "user", "content": g["question"]}],
+                )
+                ms.append((time.perf_counter() - t) * 1000)
+                judge = groq.chat.completions.create(
+                    model=JUDGE_MODEL, temperature=0, max_tokens=200, reasoning_effort="low",
+                    messages=[{"role": "user", "content": JUDGE.format(context=context,
+                                                                       answer=resp.choices[0].message.content)}],
+                )
+            except Exception as e:
+                if not out_of_budget(e):
+                    raise
+                print(f"{model}: stopped after {len(grounded)} questions ({e})")
+                break
             tokens.append(resp.usage.total_tokens)
-            judge = groq.chat.completions.create(  # the smaller model judges, to spare the chat model's budget
-                model="openai/gpt-oss-20b", temperature=0, max_tokens=200, reasoning_effort="low",
-                messages=[{"role": "user", "content": JUDGE.format(context=context,
-                                                                   answer=resp.choices[0].message.content)}],
-            )
             grounded.append((judge.choices[0].message.content or "").strip().upper().startswith("YES"))
             time.sleep(4)  # stay under the provider's per-minute token limit
-        results[model] = {"grounded": round(statistics.mean(grounded), 3), "llm_p50_ms": p(ms, 50),
-                          "llm_p95_ms": p(ms, 95), "avg_tokens": round(statistics.mean(tokens)),
-                          "questions": len(golden)}
-        print(model, results[model])
+        if grounded:
+            results[model] = {"grounded": round(statistics.mean(grounded), 3), "llm_p50_ms": p(ms[:len(grounded)], 50),
+                              "llm_p95_ms": p(ms[:len(grounded)], 95), "avg_tokens": round(statistics.mean(tokens)),
+                              "questions": len(grounded)}
+            print(model, results[model])
     return results
 
 
@@ -119,13 +162,11 @@ def ranking_match(got, ref):
     return bool(g) and g[0] == r[0], len(set(g[:3]) & set(r[:3])) / min(3, len(r))
 
 
-def score_ranking(questions):
-    from groq import Groq
-
+def score_ranking(questions, groq):
     from api import router
     from api.main import GROQ_MODEL, db  # the app's own locked connection, so SQL runs under its rules
 
-    groq, cur = Groq(), db.cursor()
+    cur = db.cursor()
     top1, top3, failed, ms = [], [], 0, []
     for q in questions:
         ref = router.run_sql(cur, q["sql"])
@@ -134,6 +175,9 @@ def score_ranking(questions):
             _, sql = router.database_context(groq, GROQ_MODEL, cur, q["question"])
             got = router.run_sql(cur, sql)
         except Exception as e:  # a router error is a wrong answer, not a crashed eval
+            if out_of_budget(e):
+                print(f"ranking: stopped after {len(top1)} questions ({e})")
+                break
             print(f"q{q['qid']} failed: {type(e).__name__}")
             failed, got = failed + 1, []
         ms.append((time.perf_counter() - t) * 1000)
@@ -141,6 +185,8 @@ def score_ranking(questions):
             top1.append(m[0])
             top3.append(m[1])
         time.sleep(2)  # stay under the provider's per-minute token limit
+    if not top1:
+        return None
     result = {"top1": round(statistics.mean(top1), 3), "top3_overlap": round(statistics.mean(top3), 3),
               "failed": failed, "p50_ms": p(ms, 50), "questions": len(top1)}
     print("ranking", result)
@@ -158,7 +204,7 @@ def attribute_scores(pairs):
             "invented": round(statistics.mean(m != "unknown" for m in silent), 3) if silent else None}
 
 
-def score_attributes(gold):
+def score_attributes(gold, groq):
     import duckdb
 
     from pipeline import attributes, llm
@@ -167,15 +213,23 @@ def score_attributes(gold):
     text = dict(con.execute("select review_id, comment from fct_review where review_id in (select unnest(?))",
                             [[g["review_id"] for g in gold]]).fetchall())
     batch_all = [(g["review_id"], text[g["review_id"]], "") for g in gold if g["review_id"] in text]
-    client, got = llm.client(), {}
+    got = {}
     for start in range(0, len(batch_all), attributes.BATCH):  # same prompt, model and batching as the pipeline
         batch = batch_all[start:start + attributes.BATCH]
         reviews = "\n\n".join(f"[{i}] {c}" for i, (_, c, _) in enumerate(batch, 1))
-        reply, _ = llm.complete_json(client, attributes.MODEL, attributes.PROMPT.format(reviews=reviews), 2500)
+        try:
+            reply, _ = llm.complete_json(groq, attributes.MODEL, attributes.PROMPT.format(reviews=reviews), 2500)
+        except Exception as e:
+            if not out_of_budget(e):
+                raise
+            print(f"attributes: stopped after {len(got)} reviews ({e})")
+            break
         rows, _ = attributes.parse(batch, reply)
         got |= {r["review_id"]: r for r in rows}
         time.sleep(4)
     scored = [g for g in gold if g["review_id"] in got]
+    if not scored:
+        return None
     result = {f: attribute_scores([(g[f], got[g["review_id"]][f]) for g in scored])
               for f in ("exam_style", "curve", "workload")} | {"reviews": len(scored)}
     print("attributes", result)
@@ -214,7 +268,7 @@ def main():
     ap.add_argument("--variants", nargs="+", default=list(VARIANTS))
     ap.add_argument("--stages", nargs="*", default=[], choices=["answers", "ranking", "attributes"],
                     help="LLM parts to score too (they use the provider's daily token limit)")
-    ap.add_argument("--models", nargs="+", default=["openai/gpt-oss-120b", "openai/gpt-oss-20b"],
+    ap.add_argument("--models", nargs="+", default=["openai/gpt-oss-120b"],
                     help="answer models to compare")
     ap.add_argument("--skip-retrieval", action="store_true", help="keep the saved retrieval scores")
     ap.add_argument("--min-recall5", type=float, help="exit 1 if the first variant scores below this")
@@ -237,13 +291,16 @@ def main():
         save("retrieval", retrieval)
         if a.min_recall5 is not None and retrieval[a.variants[0]]["recall@5"] < a.min_recall5:
             raise SystemExit(f"recall@5 {retrieval[a.variants[0]]['recall@5']} below {a.min_recall5}")
+    groq = _groq() if a.stages else None
     if "answers" in a.stages:
         for model in a.models:
-            save("answers", results.get("answers", {}) | score_answers(golden, [model]))
-    if "ranking" in a.stages:
-        save("ranking", score_ranking(labeled("ranking")))
-    if "attributes" in a.stages:
-        save("attributes", score_attributes(labeled("attributes_gold")))
+            save("answers", results.get("answers", {}) | score_answers(golden, [model], groq))
+    if "ranking" in a.stages and (ranking := score_ranking(labeled("ranking"), groq)):
+        save("ranking", ranking)
+    if "attributes" in a.stages and (attrs := score_attributes(labeled("attributes_gold"), groq)):
+        save("attributes", attrs)
+    if groq:
+        print("tokens used this run:", dict(groq.used))
 
 
 if __name__ == "__main__":
