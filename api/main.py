@@ -112,6 +112,8 @@ def allow(ip, now):
 
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"), timeout=20, max_retries=1)
 GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
+# Each model has its own daily token quota: when the main one is spent, a smaller answer beats an error.
+FALLBACK_MODEL = os.getenv("GROQ_FALLBACK_MODEL", "openai/gpt-oss-20b")
 
 SYSTEM_PROMPT = """You are a helpful assistant for UCSD students trying to find the best professors.
 You are given real student reviews from Rate My Professor as context.
@@ -198,13 +200,14 @@ def ask(body: Question, request: Request):
         messages.append({"role": "user", "content": question})
 
         t = time.perf_counter()
-        response = groq_client.chat.completions.create(
-            model=GROQ_MODEL,
-            messages=messages,
-            temperature=0.3,
-            max_tokens=800,
-            reasoning_effort="low",
-        )
+        settings = {"messages": messages, "temperature": 0.3, "max_tokens": 800, "reasoning_effort": "low"}
+        try:
+            response = groq_client.chat.completions.create(model=GROQ_MODEL, **settings)
+        except Exception as e:
+            if "per day" not in str(e):  # only the daily quota: other errors would fail the same way again
+                raise
+            log["model"] = FALLBACK_MODEL
+            response = groq_client.chat.completions.create(model=FALLBACK_MODEL, **settings)
         log["llm_ms"] = round((time.perf_counter() - t) * 1000)
         log["tokens"] = response.usage.total_tokens if response.usage else None
         answer = normalize_citations(response.choices[0].message.content or "")
