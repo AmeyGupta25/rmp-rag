@@ -34,7 +34,7 @@ Every answer cites the reviews it came from, ranking questions are answered from
 ## Brand Commitments
 - Name: **UCSD ProfAI**.
 - **Not affiliated with UCSD or Rate My Professors**, and must not look official: no UCSD logo or Triton artwork, and no UCSD navy/gold palette. A clear "unofficial" disclaimer appears on the site.
-- The logo is a solid trident in the style of UCSD's, drawn from scratch in the product's violet with no card frame (owner's decision, 2026-11-12). It must never reuse the official UCSD artwork or navy/gold.
+- The logo is a solid graduation cap drawn from scratch in the product's violet, with no card frame (owner's decision, 2026-11-17; it replaced a UCSD-style trident). It must never reuse official UCSD artwork or navy/gold.
 
 ## Evidence on Hand
 - Real data: 21,649 reviews, 500 professors, weekly pipeline runs, eval results (pending first full run).
