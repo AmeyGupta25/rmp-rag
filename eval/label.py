@@ -8,7 +8,7 @@ Review text is shown in the browser only. Files get IDs and labels, never text (
 """
 
 import json
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import get_args
 from urllib.parse import parse_qs, urlparse
@@ -123,4 +123,5 @@ class Handler(BaseHTTPRequestHandler):
 if __name__ == "__main__":
     ensure_attribute_sample()
     print(f"Labeling tool: {ORIGIN}  (Ctrl+C to stop)")
-    HTTPServer((HOST, PORT), Handler).serve_forever()  # local only: it serves review text
+    # local only: it serves review text. Threaded, so one slow search can't freeze the page.
+    ThreadingHTTPServer((HOST, PORT), Handler).serve_forever()
