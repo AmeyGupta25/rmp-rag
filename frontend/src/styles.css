@@ -235,6 +235,7 @@ a.card-name:hover { text-decoration: underline; }
 .cmp-how { font-size: 13px; color: var(--muted); max-width: 72ch; margin-bottom: 20px; }
 .cmp-verdict b { color: var(--ink); font-weight: 650; }
 .cmp-for { color: var(--muted); font-weight: 500; }
+.cmp-swipe { display: none; }
 .cmp-skeleton { height: 420px; margin-top: 20px; }
 .cmp { --label: 190px; --col: 220px; width: 100%; min-width: calc(var(--label) + var(--n) * var(--col)); border-collapse: separate; border-spacing: 0; table-layout: fixed; font-size: 14px; }
 .cmp th[scope="row"], .cmp-corner { width: var(--label); }
@@ -333,6 +334,7 @@ a.card-name:hover { text-decoration: underline; }
 .course-head h2 { font-size: 26px; }
 .course-skeleton { height: 240px; margin-top: 28px; }
 .terms { display: flex; flex-wrap: wrap; gap: 4px; }
+.twin-dept { font-weight: 400; }
 .term { font: 600 12px var(--ui); padding: 2px 7px; border-radius: 6px; background: var(--rail); border: 1px solid var(--line); font-variant-numeric: tabular-nums; }
 
 /* ratings range: histogram over two linked sliders; both span the same track so bars sit between stops */
@@ -371,6 +373,8 @@ a.card-name:hover { text-decoration: underline; }
 .grade-legend li { display: inline-flex; align-items: center; gap: 6px; }
 .grade-legend i { width: 10px; height: 10px; border-radius: 3px; }
 .grade-legend b { color: var(--ink); font-weight: 650; }
+/* the same 2 x 2 legend in every Compare column, instead of wrapping wherever a wider number lands */
+.cmp .grade-legend { display: grid; grid-template-columns: auto auto; justify-content: start; }
 .grades figcaption { font-size: 12px; color: var(--muted); }
 
 .show-all { margin-top: 8px; padding-inline: 0; }
@@ -433,6 +437,10 @@ a.card-name:hover { text-decoration: underline; }
   .cmp tbody th, .cmp tbody td { padding: 9px 6px; }
   .cmp-scroll { max-height: calc(100dvh - 96px); overflow: auto; }
   .cmp-scroll.n-2 { max-height: none; overflow: visible; }
+  /* the third column runs off the edge, so say so and fade the edge */
+  .cmp-swipe { display: block; font-size: 13px; color: var(--muted); margin: -12px 0 12px; }
+  .cmp .grade-legend { grid-template-columns: auto; }
+  .cmp-scroll.n-3 { mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
   .cmp thead th, .cmp-corner { position: sticky; top: 0; z-index: 2; background: var(--page); padding: 0 3px 8px; }
   .cmp-corner { left: 0; z-index: 3; }
   .cmp-prof { padding: 8px 9px; }

@@ -2,12 +2,9 @@ import { useEffect, useId, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useApi } from "../api.js";
 import { Grades, Tags, hasGrades } from "../components/Grades.jsx";
-import { LoadingCard, ProfCard, Stat, curvedOf, one, pct } from "../components/ProfCard.jsx";
+import { LoadingCard, ProfCard, Stat, curvedOf, one, pct, spaced, workload } from "../components/ProfCard.jsx";
 import { TrendChart } from "../components/TrendChart.jsx";
-
-const monthYear = (d) => new Date(d).toLocaleDateString("en-US", { month: "short", year: "2-digit" });
-
-const ratingPoints = (prof) => prof.rating_history.map((h) => ({ label: monthYear(h.valid_from), value: h.avg_rating }));
+import { ratingPoints } from "../rating-points.js";
 
 function Summary({ summary }) {
   const id = useId();
@@ -71,12 +68,12 @@ export function Professor() {
               <div className="stats">
                 {p.attendance_mandatory_pct != null && <Stat label="Attendance required" text={pct(p.attendance_mandatory_pct)} fill={p.attendance_mandatory_pct} />}
                 {p.says_curved_pct != null && <Stat label="Says it's curved" text={curvedOf(p)} fill={p.says_curved_pct} />}
-                {p.workload_score != null && <Stat label="Workload" text={`${Math.round(p.workload_score)}/100`} fill={p.workload_score} />}
+                {p.workload_score != null && <Stat label="Workload" text={workload(p.workload_score)} fill={p.workload_score} />}
               </div>
             </section>
           )}
-          {p.rating_history.length > 1 && (
-            <section className="panel"><TrendChart points={ratingPoints(p)} label="Overall rating over time" /></section>
+          {p.by_quarter.length > 1 && (
+            <section className="panel"><TrendChart points={ratingPoints(p.by_quarter)} label="Overall rating over time" /></section>
           )}
           {p.by_course.length > 0 && (
             <section className="panel" aria-labelledby="course-head">
@@ -86,7 +83,7 @@ export function Professor() {
                   <thead><tr><th scope="col">Course</th><th scope="col" className="n">Reviews</th><th scope="col" className="n">Quality</th><th scope="col" className="n">Difficulty</th><th scope="col" className="n">Last reviewed</th></tr></thead>
                   <tbody>{courses.map((c) => (
                     <tr key={c.course_code}>
-                      <td><Link to={`/search?tab=classes&course=${encodeURIComponent(c.course_code)}`}>{c.course_code}</Link></td>
+                      <td><Link to={`/search?tab=classes&course=${encodeURIComponent(c.course_code)}`}>{spaced(c.course_code)}</Link></td>
                       <td className={`n${c.reviews === 1 ? " muted" : ""}`}>{c.reviews === 1 ? "1 review" : c.reviews}</td>
                       <td className="n">{one(c.avg_quality)}</td>
                       <td className="n">{one(c.avg_difficulty)}</td>

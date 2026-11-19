@@ -55,7 +55,7 @@ export function Ask() {
       <form className="ask-row" onSubmit={(e) => { e.preventDefault(); ask(); }}>
         <label htmlFor="q" className="sr-only">Your question</label>
         <input id="q" className="input" value={question} maxLength={500} autoComplete="off"
-          placeholder="Ask about a professor or class, like “Who should I take for CSE 101?”"
+          placeholder="Ask about a professor or class"
           onChange={(e) => setQuestion(e.target.value)} />
         <select className="select" aria-label="Department" value={department} onChange={(e) => setDepartment(e.target.value)}>
           <option value="">All departments</option>

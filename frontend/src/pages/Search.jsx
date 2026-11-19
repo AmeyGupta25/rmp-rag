@@ -180,6 +180,8 @@ function Course({ code }) {
   const rows = sortRows(byInstructor(data), by, dir);
   // Columns nobody has data for are left out, like on Compare.
   const anyTerms = rows.some((r) => r.terms.length);
+  // Rate My Professors sometimes has two profiles with one name (one per department); say which is which.
+  const twins = new Set(rows.map((r) => r.name).filter((n, i, all) => all.indexOf(n) !== i));
   const cols = rows.some((r) => r.reviews) ? COURSE_COLS : [];
   if (!rows.length) {
     return <div className="empty"><p>No reviews or schedule history for {spaced(data.course_code)}.</p><Link to="/search?tab=classes">Browse all classes</Link></div>;
@@ -189,7 +191,7 @@ function Course({ code }) {
       <div className="course-head">
         <Link className="crumb-link" to="/search?tab=classes"><ArrowLeft size={15} aria-hidden="true" />All classes</Link>
         <h2 id="course-head">{spaced(data.course_code)}</h2>
-        <p className="muted">{rows.length} instructor{rows.length === 1 ? "" : "s"}, with the terms they taught it (schedule archive through Summer 2026) and their ratings for this course.</p>
+        <p className="muted">{rows.length} instructor{rows.length === 1 ? "" : "s"}, with their ratings for this course. Terms taught come from UCSD’s public schedule archive, which only covers recent quarters.</p>
       </div>
       <div className="scroll-x">
         <table className="table rows-phone">
@@ -204,7 +206,7 @@ function Course({ code }) {
           </tr></thead>
           <tbody>{rows.map((r) => (
             <tr key={r.professor_id || r.name} className={r.reviews < FEW ? "few" : undefined}>
-              <td>{r.professor_id ? <Link to={`/professors/${r.professor_id}`}>{r.name}</Link> : r.name}</td>
+              <td>{r.professor_id ? <Link to={`/professors/${r.professor_id}`}>{r.name}</Link> : r.name}{twins.has(r.name) && r.department && <span className="muted twin-dept"> · {r.department}</span>}</td>
               {anyTerms && <td className={`terms-cell${r.terms.length ? "" : " none"}`}>{r.terms.length ? <span className="terms">{r.terms.map((t) => <span key={t} className="term">{t}</span>)}</span> : <span className="muted">—</span>}</td>}
               {cols.map(([k, , short]) => <td key={k} className="n" data-label={short}>{k === "reviews" ? r.reviews ?? "—" : one(r[k])}</td>)}
               <td className="act">{r.professor_id && <CompareButton id={r.professor_id} name={r.name} />}</td>

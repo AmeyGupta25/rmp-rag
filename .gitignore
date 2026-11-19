@@ -20,3 +20,6 @@ transform/dbt_packages/
 
 # Failed eval answers quote review text
 eval/answer_failures.jsonl
+
+# Playwright screenshots (npm run shot)
+frontend/screenshots/
