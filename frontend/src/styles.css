@@ -105,15 +105,26 @@ a.btn { text-decoration: none; }
 /* no background: the front already hides its backface, and a fill here would paint over the card's inner frame */
 .side.back { position: absolute; inset: 0; transform: rotateY(180deg); border-radius: var(--radius); }
 .back-name { font: 700 18px/1.2 var(--display); letter-spacing: -0.02em; }
-.back-body { display: flex; flex-direction: column; gap: 10px; font-size: 14px; flex: 1; min-height: 0; overflow-y: auto; }
-.back-body .back-h { font: 650 11.5px var(--ui); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0; }
-.back-body ul { margin: 4px 0 0; padding-left: 18px; }
+.back-body {
+  display: flex; flex-direction: column; font-size: 14px; line-height: 1.5; flex: 1; min-height: 0; overflow-y: auto;
+  /* the scrollbar gets its own lane inside the card's side padding, so it never draws over text */
+  scrollbar-gutter: stable; scrollbar-width: thin; scrollbar-color: var(--line) transparent;
+  padding: 0 12px 24px 0; margin-right: -12px;
+  /* fade the bottom edge to hint there's more; the bottom padding lets the last line scroll clear of it */
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 24px), transparent);
+}
+.side .back-body > * + * { border-top: 1px dashed var(--line); padding-top: 14px; margin-top: 14px; }
+.back-body .back-h { font: 650 11.5px var(--ui); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
+.back-body ul { margin: 0; padding-left: 18px; }
+.back-body ul:not([class]) > li + li { margin-top: 4px; }
 .back-body ul.tags, .back-body ul.back-courses { padding-left: 0; }
 .back-courses { list-style: none; display: flex; flex-direction: column; gap: 6px; }
 .back-courses li { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; color: var(--muted); }
 .back-courses b { color: var(--ink); font-weight: 650; }
-.back-body .kv { margin-top: 4px; font-size: 14px; }
-.facts { margin-top: 8px; }
+.back-body .kv { margin-top: 10px; font-size: 14px; }
+.back-body .back-h + .kv { margin-top: 0; }
+.back-body .kv b { margin-bottom: 2px; }
+.back-body .facts { margin-top: 10px; }
 .facts b { font-weight: 650; }
 .card-title { font: inherit; letter-spacing: inherit; margin: 0; }
 .foot-actions { display: flex; gap: 8px; margin-left: auto; }
