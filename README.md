@@ -8,7 +8,7 @@ about professors and get answers cited from 21,649 real Rate My Professor review
 ## Highlights
 
 - **Weekly ELT pipeline:** reviews for 500 professors are extracted, validated and landed in S3, then modeled in
-  dbt + DuckDB (17 models, 41 data tests). A failed test stops the run before anything is published.
+  dbt + DuckDB (17 models, 42 data tests). A failed test stops the run before anything is published.
 - **Measured retrieval:** a cross-encoder reranker raised recall@10 from 0.76 to **0.94** and MRR from 0.75 to
   **0.88** on a hand-labeled 50-question set.
 - **Text-to-SQL with guardrails:** ranking questions ("easiest CSE professor") are answered from the ratings
