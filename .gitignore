@@ -17,3 +17,6 @@ transform/dbt_packages/
 # Impeccable working files (mocks, answers, caches); only the design brief is committed
 .impeccable/*
 !.impeccable/surfaces/
+
+# Failed eval answers quote review text
+eval/answer_failures.jsonl

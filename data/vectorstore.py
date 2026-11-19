@@ -44,5 +44,6 @@ def rerank(question, matches, top_n=8):
         return matches[:top_n]
 
 
-def query(question, top_k=8, department=""):
-    return [m["text"] for m in search(question, top_k, department)]
+def query(question, top_k=8, department="", namespace=None):
+    # 25 candidates reranked to top_k: recall@10 0.76 -> 0.94 in eval/results.md
+    return [m["text"] for m in rerank(question, search(question, 25, department, namespace), top_n=top_k)]

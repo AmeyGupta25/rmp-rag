@@ -5,7 +5,8 @@ With --stages (each model's spend per run is capped, see MeteredGroq):
 - answers: latency, tokens, and groundedness judged by a second model
 - rankings (eval/ranking.jsonl): the app's SQL router vs the approved reference SQL, top pick and top 3
 - attributes (eval/attributes_gold.jsonl): the pipeline's extraction prompt vs hand labels
-Writes eval/results.json and eval/results.md (scores only, never review text).
+Writes eval/results.json and eval/results.md (scores only, never review text), and the failed answers
+to eval/answer_failures.jsonl (gitignored: answers quote reviews).
 """
 
 import argparse
@@ -16,8 +17,9 @@ import time
 from collections import Counter
 from pathlib import Path
 
-from data.vectorstore import rerank, search
+from data.vectorstore import query, rerank, search
 
+FAILURES = Path("eval/answer_failures.jsonl")  # each ungrounded answer and the judge's reason
 NAMESPACE = "reviews"  # the pipeline's namespace: vector id == review id
 # The provider's daily token quota is per account and shared with the live site and the backfill
 # (200k per model), so one eval run may use only this much of each model's quota.
@@ -98,7 +100,7 @@ def score_retrieval(golden, variants):
 
 
 JUDGE = """Does every factual claim in ANSWER appear in, or follow directly from, CONTEXT?
-Reply with exactly YES or NO.
+Reply with exactly YES, or NO: followed by the first claim that doesn't.
 
 CONTEXT:
 {context}
@@ -108,40 +110,45 @@ ANSWER:
 
 
 def score_answers(golden, models, groq):
-    from api.main import SYSTEM_PROMPT
+    from api.main import build_messages, normalize_citations
 
-    results = {}
+    results, failures = {}, []
     for model in models:
         ms, tokens, grounded = [], [], []
         for g in golden:
-            context = "\n\n---\n\n".join(m["text"] for m in search(g["question"], top_k=8, namespace=NAMESPACE))
             try:
+                messages = build_messages(g["question"], "", query(g["question"], top_k=8, namespace=NAMESPACE),
+                                          groq, {})
                 t = time.perf_counter()
-                resp = groq.chat.completions.create(
-                    model=model, temperature=0.3, max_tokens=800, reasoning_effort="low",
-                    messages=[{"role": "system", "content": SYSTEM_PROMPT},
-                              {"role": "system", "content": f"Context from Rate My Professor reviews:\n\n{context}"},
-                              {"role": "user", "content": g["question"]}],
-                )
+                resp = groq.chat.completions.create(model=model, temperature=0.3, max_tokens=800,
+                                                    reasoning_effort="low", messages=messages)
                 ms.append((time.perf_counter() - t) * 1000)
+                answer = normalize_citations(resp.choices[0].message.content or "")
+                # the judge sees every fact the answer was given: reviews, live ratings, SQL table
+                context = "\n\n".join(m["content"] for m in messages[1:-1])
                 judge = groq.chat.completions.create(
-                    model=JUDGE_MODEL, temperature=0, max_tokens=200, reasoning_effort="low",
-                    messages=[{"role": "user", "content": JUDGE.format(context=context,
-                                                                       answer=resp.choices[0].message.content)}],
+                    model=JUDGE_MODEL, temperature=0, max_tokens=300, reasoning_effort="low",
+                    messages=[{"role": "user", "content": JUDGE.format(context=context, answer=answer)}],
                 )
             except Exception as e:
                 if not out_of_budget(e):
                     raise
                 print(f"{model}: stopped after {len(grounded)} questions ({e})")
                 break
+            verdict = (judge.choices[0].message.content or "").strip()
             tokens.append(resp.usage.total_tokens)
-            grounded.append((judge.choices[0].message.content or "").strip().upper().startswith("YES"))
-            time.sleep(4)  # stay under the provider's per-minute token limit
+            grounded.append(verdict.upper().startswith("YES"))
+            if not grounded[-1]:
+                failures.append({"model": model, "qid": g.get("qid"), "question": g["question"],
+                                 "answer": answer, "verdict": verdict})
+            time.sleep(20)  # ~2.7k tokens/question vs 8k/min; shorter waits get the client's retry waits timed
         if grounded:
             results[model] = {"grounded": round(statistics.mean(grounded), 3), "llm_p50_ms": p(ms[:len(grounded)], 50),
                               "llm_p95_ms": p(ms[:len(grounded)], 95), "avg_tokens": round(statistics.mean(tokens)),
                               "questions": len(grounded)}
             print(model, results[model])
+    # quotes review text, so gitignored (CI blocks scraped text in git)
+    FAILURES.write_text("".join(json.dumps(f) + "\n" for f in failures))
     return results
 
 

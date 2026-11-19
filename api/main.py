@@ -156,6 +156,33 @@ def current_ratings(chunks):
     return "Current Rate My Professor averages:\n" + "\n".join(lines) if lines else ""
 
 
+def build_messages(question, department, context_chunks, client, log):
+    """The full prompt /ask sends. The answer eval calls this too, so it scores what the site really does."""
+    context = "\n\n---\n\n".join(f"[{i}] {c}" for i, c in enumerate(context_chunks, 1))
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "system", "content": f"Context from Rate My Professor reviews:\n\n{context}\n\n"
+                                      "Citation rule: every sentence that uses a review must end with its "
+                                      "number in square brackets, like [2] or [1][3]."},
+    ]
+    if ratings := current_ratings(context_chunks):
+        messages.append({"role": "system", "content": ratings})
+
+    log["route"] = "rag"
+    if router.is_analytical(question):
+        try:
+            t = time.perf_counter()
+            table, _ = router.database_context(client, GROQ_MODEL, db.cursor(), question, department)
+            log.update(route="sql+rag", sql_ms=round((time.perf_counter() - t) * 1000), sql_rows=bool(table))
+            if table:
+                messages.append({"role": "system", "content": table})
+        except Exception as e:  # the router only adds facts; on any failure, answer from reviews alone
+            log.update(route="rag (sql failed)", sql_error=type(e).__name__)
+
+    messages.append({"role": "user", "content": question})
+    return messages
+
+
 @app.post("/ask")
 def ask(body: Question, request: Request):
     question = body.question
@@ -175,29 +202,7 @@ def ask(body: Question, request: Request):
         t = time.perf_counter()
         context_chunks = query(question, top_k=8, department=department)
         log["retrieve_ms"] = round((time.perf_counter() - t) * 1000)
-        context = "\n\n---\n\n".join(f"[{i}] {c}" for i, c in enumerate(context_chunks, 1))
-
-        messages = [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "system", "content": f"Context from Rate My Professor reviews:\n\n{context}\n\n"
-                                          "Citation rule: every sentence that uses a review must end with its "
-                                          "number in square brackets, like [2] or [1][3]."},
-        ]
-        if ratings := current_ratings(context_chunks):
-            messages.append({"role": "system", "content": ratings})
-
-        log["route"] = "rag"
-        if router.is_analytical(question):
-            try:
-                t = time.perf_counter()
-                table, _ = router.database_context(groq_client, GROQ_MODEL, db.cursor(), question, department)
-                log.update(route="sql+rag", sql_ms=round((time.perf_counter() - t) * 1000), sql_rows=bool(table))
-                if table:
-                    messages.append({"role": "system", "content": table})
-            except Exception as e:  # the router only adds facts; on any failure, answer from reviews alone
-                log.update(route="rag (sql failed)", sql_error=type(e).__name__)
-
-        messages.append({"role": "user", "content": question})
+        messages = build_messages(question, department, context_chunks, groq_client, log)
 
         t = time.perf_counter()
         settings = {"messages": messages, "temperature": 0.3, "max_tokens": 800, "reasoning_effort": "low"}
