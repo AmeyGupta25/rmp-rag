@@ -5,7 +5,7 @@ import { api } from "../api.js";
 import { useCompare } from "../compare.jsx";
 import { ErrorNotice } from "../components/ErrorNotice.jsx";
 import { Grades, MIN_GRADES, hasGrades } from "../components/Grades.jsx";
-import { curvedOf, one, pct, spaced } from "../components/ProfCard.jsx";
+import { curvedOf, one, pct, spaced, workload } from "../components/ProfCard.jsx";
 import { rowWinner, verdict } from "../compare-rules.js";
 
 // better (see compare-rules.js): +1 higher wins, -1 lower wins, 0 never judged. Only rows where "better" isn't a
@@ -22,7 +22,7 @@ const GROUPS = [
     ["A- or better", "a_or_better", pct, 1, "Best grades"],
     ["Attendance required", "attendance_mandatory_pct", pct, 0],
     ["Says it's curved", "says_curved_pct", (_, p) => curvedOf(p), 0],
-    ["Workload (out of 100)", "workload_score", (v) => (v == null ? "—" : `${Math.round(v)}/100`), 0],
+    ["Workload", "workload_score", workload, 0],
   ]],
 ];
 
@@ -112,6 +112,7 @@ export function Compare() {
       <p className="cmp-how">{byCourse
         ? `How we count: a check marks the one clear best quality and difficulty in ${spaced(course)}. The overall numbers below are there for context and aren’t judged.`
         : "How we count: a check marks the one clear best value for rating, difficulty, would take again and A- or better. Number of ratings, attendance, curve and workload are shown but never judged, since what’s better there depends on you."}</p>
+      {list.length === 3 && <p className="cmp-swipe">Swipe sideways to see all three.</p>}
       <div className={`scroll-x cmp-scroll n-${list.length}`}>
         <table className="cmp" style={{ "--n": list.length }}>
           <thead>

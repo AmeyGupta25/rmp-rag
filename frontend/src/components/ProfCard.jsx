@@ -8,6 +8,8 @@ import { Grades, MIN_GRADES, Tags } from "./Grades.jsx";
 
 export const one = (v) => (v == null ? "—" : Number(v).toFixed(1));
 export const pct = (v) => (v == null ? "—" : `${Math.round(v)}%`);
+// Reviews rate workload light (0), moderate (50) or heavy (100); a bare "0/100" read like missing data.
+export const workload = (v) => (v == null ? "—" : `${v < 34 ? "Light" : v < 67 ? "Moderate" : "Heavy"} · ${Math.round(v)}/100`);
 // Few reviews say whether grades were curved, so the count is the honest form ("26 of 41 reviews"), not a %.
 export const curvedOf = (p) => (p.says_curved_pct == null ? "—" : `${p.says_curved} of ${p.curve_mentions} reviews`);
 export const spaced = (code) => code.replace(/^([A-Z]+)(\d)/, "$1 $2");  // "CSE101" -> "CSE 101"
@@ -169,7 +171,6 @@ export function ProfCard({ p, rank, best, badge = "Best pick", link = true, head
           <Tags tags={p.top_tags} />
           {p.verdict && <p className="verdict">{p.verdict}</p>}
           <div className="card-foot">
-            {p.common_exam_style ? <span>Exams: {p.common_exam_style.replace("_", " ")}</span> : <span />}
             <div className="foot-actions">
               {canFlip && <button ref={frontBtn} type="button" className="btn ghost small" aria-label={`Flip ${p.name}'s card for details`} onClick={turn}><RotateCw size={15} aria-hidden="true" />Flip</button>}
               <CompareButton id={p.professor_id} name={p.name} />
